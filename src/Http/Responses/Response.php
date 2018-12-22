@@ -1,0 +1,53 @@
+<?php
+/*
+ * This file is part of nattvara/detectify-guestbook.
+ *
+ * (c) Ludwig Kristoffersson <ludwig@kristoffersson.org>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Guestbook\Http\Responses;
+
+abstract class Response {
+
+    /**
+     * Response body
+     *
+     * @var string
+     */
+    private $responseBody = '';
+
+    /**
+     * Set response body
+     *
+     * @param string $responseBody
+     * @return void
+     */
+    public function setResponseBody(string $responseBody) {
+        $this->responseBody = $responseBody;
+    }
+
+    /**
+     * Get response body
+     *
+     * @return string
+     */
+    public function getResponseBody(): string {
+        return $this->responseBody;
+    }
+
+    /**
+     * Write response
+     *
+     * @return void
+     */
+    public function write() {
+        header(sprintf('Content-Type: ', $this->contentType));
+        $fp = fopen('php://output', 'w');
+        fwrite($fp, $this->getResponseBody());
+        fclose($fp);
+    }
+
+}
