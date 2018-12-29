@@ -35,4 +35,16 @@ class DummyController extends Controller {
         return new PlainTextResponse('foo');
     }
 
+    /**
+     * Add two numbers together
+     *
+     * @param  Request $request
+     * @return PlainTextResponse
+     */
+    public function addNumbers(Request $request): PlainTextResponse {
+        $number1 = $request->input('number1');
+        $number2 = $request->input('number2');
+        return new PlainTextResponse($number1 + $number2);
+    }
+
 }

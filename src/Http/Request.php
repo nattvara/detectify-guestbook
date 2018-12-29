@@ -12,6 +12,7 @@ namespace Guestbook\Http;
 
 use Guestbook\Http\Exceptions\HttpException;
 use Guestbook\Http\Routes\GET;
+use Guestbook\Http\Routes\POST;
 
 class Request {
 
@@ -32,6 +33,13 @@ class Request {
     private $method;
 
     /**
+     * Request input data
+     *
+     * @var array
+     */
+    private $data = [];
+
+    /**
      * Read request variables from php globals
      *
      * @return void
@@ -39,12 +47,14 @@ class Request {
     public function readPhpGlobals() {
         $supportedMethods = [
             'GET'   => GET::class,
+            'POST'  => POST::class,
         ];
         if (!in_array($_SERVER['REQUEST_METHOD'], array_keys($supportedMethods))) {
             throw new HttpException(sprintf('Unsupported method \'%s\'', $_SERVER['REQUEST_METHOD']));
         }
         $this->setMethod($supportedMethods[$_SERVER['REQUEST_METHOD']]);
         $this->setPath($_SERVER['REQUEST_URI']);
+        $this->setInput($_POST);
     }
 
     /**
@@ -83,5 +93,31 @@ class Request {
      */
     public function getMethod() {
         return $this->method;
+    }
+
+    /**
+     * Set input data
+     *
+     * @param array $data
+     * @return void
+     */
+    public function setInput(array $data) {
+        $this->data = $data;
+    }
+
+    /**
+     * Get input data
+     *
+     * @param  bool|string $key if defined value with specified key is returned
+     * @return mixed
+     */
+    public function input($key = false) {
+        if (!$key) {
+            return $this->data;
+        }
+        if (!isset($this->data[$key])) {
+            return null;
+        }
+        return $this->data[$key];
     }
 }

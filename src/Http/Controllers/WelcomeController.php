@@ -36,4 +36,14 @@ class WelcomeController extends Controller {
         return new HtmlResponse('now.html', ['time' => date('H:i:s')]);
     }
 
+    /**
+     * A simple post test
+     *
+     * @param  Request $request
+     * @return HtmlResponse
+     */
+    public function post(Request $request): HtmlResponse {
+        return new HtmlResponse('post.html', ['foo' => $request->input('foo')]);
+    }
+
 }

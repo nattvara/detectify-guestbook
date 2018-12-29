@@ -15,6 +15,7 @@ use Guestbook\Http\Request;
 use Guestbook\Http\Responses\HtmlResponse;
 use Guestbook\Http\Router;
 use Guestbook\Http\Routes\GET;
+use Guestbook\Http\Routes\POST;
 use PHPUnit\Framework\TestCase;
 use Tests\DummyController;
 
@@ -127,6 +128,28 @@ class RouterTest extends TestCase {
         $request->setMethod(GET::class);
 
         $this->assertEquals($expectedResponse, $this->router->route($request));
+
+    }
+
+    /**
+     * Test variables in post request can be parsed and used
+     *
+     * @return void
+     */
+    public function test_variables_in_post_request_can_be_used_inside_controllers() {
+
+        $request = new Request;
+        $request->setPath('/');
+        $request->setMethod(POST::class);
+        $request->setInput([
+            'number1' => 2,
+            'number2' => 3,
+        ]);
+
+        $this->router->registerRoute(new POST('/', DummyController::class, 'addNumbers'));
+
+        $response = $this->router->route($request);
+        $this->assertStringContainsString(5, $response->getResponseBody());
 
     }
 
