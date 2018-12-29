@@ -9,6 +9,7 @@
  */
 
 use Guestbook\Http\Request;
+use Guestbook\Http\Responses\HtmlResponse;
 use Guestbook\Http\Router;
 use Guestbook\Http\Routes\GET;
 
@@ -16,6 +17,8 @@ require_once(__DIR__ . '/../vendor/autoload.php');
 
 $request = new Request;
 $request->readPhpGlobals();
+
+HtmlResponse::setResourceDirectory(__DIR__ . '/../resources/html');
 
 $router = new Router;
 $router->registerRoutes([

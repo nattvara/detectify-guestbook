@@ -11,6 +11,7 @@
 namespace Guestbook\Http\Controllers;
 
 use Guestbook\Http\Request;
+use Guestbook\Http\Responses\HtmlResponse;
 use Guestbook\Http\Responses\PlainTextResponse;
 
 class WelcomeController extends Controller {
@@ -21,8 +22,8 @@ class WelcomeController extends Controller {
      * @param  Request $request
      * @return PlainTextResponse
      */
-    public function index(Request $request): PlainTextResponse {
-        return new PlainTextResponse('welcome!');
+    public function index(Request $request): HtmlResponse {
+        return new HtmlResponse('index.html');
     }
 
     /**
