@@ -26,24 +26,4 @@ class WelcomeController extends Controller {
         return new HtmlResponse('index.html');
     }
 
-    /**
-     * Greet a sir
-     *
-     * @param  Request $request
-     * @return PlainTextResponse
-     */
-    public function sir(Request $request): PlainTextResponse {
-        return new PlainTextResponse('welcome, sir!');
-    }
-
-    /**
-     * Greet a lady
-     *
-     * @param  Request $request
-     * @return PlainTextResponse
-     */
-    public function lady(Request $request): PlainTextResponse {
-        return new PlainTextResponse('welcome, lady!');
-    }
-
 }

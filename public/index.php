@@ -9,7 +9,10 @@
  */
 
 use Guestbook\Http\Request;
+use Guestbook\Http\Responses\CssResponse;
 use Guestbook\Http\Responses\HtmlResponse;
+use Guestbook\Http\Responses\ImageResponse;
+use Guestbook\Http\Responses\JavascriptResponse;
 use Guestbook\Http\Router;
 use Guestbook\Http\Routes\GET;
 
@@ -19,12 +22,16 @@ $request = new Request;
 $request->readPhpGlobals();
 
 HtmlResponse::setResourceDirectory(__DIR__ . '/../resources/html');
+JavascriptResponse::setResourceDirectory(__DIR__ . '/../resources/js');
+CssResponse::setResourceDirectory(__DIR__ . '/../resources/css');
+ImageResponse::setResourceDirectory(__DIR__ . '/../resources/img');
 
 $router = new Router;
 $router->registerRoutes([
     new GET('/', \Guestbook\Http\Controllers\WelcomeController::class, 'index'),
-    new GET('/greetings/sir', \Guestbook\Http\Controllers\WelcomeController::class, 'sir'),
-    new GET('/greetings/lady', \Guestbook\Http\Controllers\WelcomeController::class, 'lady'),
+    new GET('/app.js', \Guestbook\Http\Controllers\AssetController::class, 'js'),
+    new GET('/app.css', \Guestbook\Http\Controllers\AssetController::class, 'css'),
+    new GET('/logo.png', \Guestbook\Http\Controllers\AssetController::class, 'logo'),
 ]);
 
 $response = $router->route($request);

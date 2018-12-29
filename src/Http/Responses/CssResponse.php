@@ -12,7 +12,7 @@ namespace Guestbook\Http\Responses;
 
 use Guestbook\Http\Responses\Traits\ReadsTemplates;
 
-class HtmlResponse extends Response {
+class CssResponse extends Response {
 
     use ReadsTemplates;
 
@@ -21,6 +21,6 @@ class HtmlResponse extends Response {
      *
      * @var string
      */
-    protected $contentType = 'text/html';
+    protected $contentType = 'text/css';
 
 }
