@@ -57,4 +57,22 @@ class HtmlResponseTest extends TestCase {
 
     }
 
+    /**
+     * Test variables can be injected to template
+     *
+     * @return void
+     */
+    public function test_variables_can_be_injected_into_template() {
+
+        HtmlResponse::setResourceDirectory($this->resourceDir);
+        $this->response = new HtmlResponse('variables.html', [
+            'var1' => 'foo',
+            'var2' => 'bar',
+        ]);
+
+        $this->assertStringContainsString('foo', $this->response->getResponseBody());
+        $this->assertStringContainsString('bar', $this->response->getResponseBody());
+
+    }
+
 }

@@ -20,10 +20,20 @@ class WelcomeController extends Controller {
      * The index page
      *
      * @param  Request $request
-     * @return PlainTextResponse
+     * @return HtmlResponse
      */
     public function index(Request $request): HtmlResponse {
         return new HtmlResponse('index.html');
+    }
+
+    /**
+     * A simple page to test variable injection to templates
+     *
+     * @param  Request $request
+     * @return HtmlResponse
+     */
+    public function now(Request $request): HtmlResponse {
+        return new HtmlResponse('now.html', ['time' => date('H:i:s')]);
     }
 
 }

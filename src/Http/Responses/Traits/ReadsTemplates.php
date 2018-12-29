@@ -22,16 +22,25 @@ trait ReadsTemplates {
     protected static $resourceDir = '';
 
     /**
-     * Create new html response
+     * Create new response
      *
      * @param string|null $template
+     * @param array       $variables
      */
-    public function __construct(?string $template = null) {
+    public function __construct(?string $template = null, array $variables = []) {
         if (!$template) {
             $this->setResponseBody('');
             return;
         }
-        $this->setResponseBody($this->readTemplate($template));
+        $template = $this->readTemplate($template);
+        foreach ($variables as $name => $value) {
+            $template = str_replace(
+                sprintf('{{%s}}', $name),
+                $value,
+                $template
+            );
+        }
+        $this->setResponseBody($template);
     }
 
     /**
