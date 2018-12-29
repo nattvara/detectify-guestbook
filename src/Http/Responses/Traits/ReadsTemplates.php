@@ -36,7 +36,7 @@ trait ReadsTemplates {
         foreach ($variables as $name => $value) {
             $template = str_replace(
                 sprintf('{{%s}}', $name),
-                $value,
+                htmlspecialchars($value),
                 $template
             );
         }
