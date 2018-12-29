@@ -12,6 +12,7 @@ namespace Tests\Unit;
 
 use Guestbook\Http\Exceptions\RouteNotFoundException;
 use Guestbook\Http\Request;
+use Guestbook\Http\Responses\HtmlResponse;
 use Guestbook\Http\Router;
 use Guestbook\Http\Routes\GET;
 use PHPUnit\Framework\TestCase;
@@ -106,6 +107,24 @@ class RouterTest extends TestCase {
         $request->setMethod(GET::class);
 
         $this->router->registerRoute(new GET('/', DummyController::class, 'plain'));
+
+        $this->assertEquals($expectedResponse, $this->router->route($request));
+
+    }
+
+    /**
+     * 404 page is returned if route isn't found
+     *
+     * @return void
+     */
+    public function test_404_page_is_returned_if_route_does_not_exist() {
+
+        HtmlResponse::setResourceDirectory(__DIR__ . '/../resources/');
+        $expectedResponse = new HtmlResponse('404.html');
+
+        $request = new Request;
+        $request->setPath('/nowhere');
+        $request->setMethod(GET::class);
 
         $this->assertEquals($expectedResponse, $this->router->route($request));
 

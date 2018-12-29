@@ -11,6 +11,7 @@
 namespace Guestbook\Http;
 
 use Guestbook\Http\Exceptions\RouteNotFoundException;
+use Guestbook\Http\Responses\HtmlResponse;
 use Guestbook\Http\Responses\Response;
 use Guestbook\Http\Routes\Route;
 
@@ -74,7 +75,11 @@ class Router {
      * @return Response
      */
     public function route(Request $request): Response {
-        $route = $this->retrieveRoute($request->getMethod(), $request->getPath());
+        try {
+            $route = $this->retrieveRoute($request->getMethod(), $request->getPath());
+        } catch (RouteNotFoundException $e) {
+            return new HtmlResponse('404.html');
+        }
         return $route->execute($request);
     }
 
