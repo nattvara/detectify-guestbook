@@ -119,7 +119,7 @@ class RouterTest extends TestCase {
      */
     public function test_404_page_is_returned_if_route_does_not_exist() {
 
-        HtmlResponse::setResourceDirectory(__DIR__ . '/../resources/');
+        HtmlResponse::setResourceDirectory(__DIR__ . '/resources/');
         $expectedResponse = new HtmlResponse('404.html');
 
         $request = new Request;

@@ -27,7 +27,7 @@ class HtmlResponseTest extends TestCase {
      */
     public function setUp() {
         $this->response = new HtmlResponse;
-        $this->resourceDir = __DIR__ . '/../resources/';
+        $this->resourceDir = __DIR__ . '/resources/';
     }
 
     /**
