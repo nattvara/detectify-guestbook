@@ -10,3 +10,7 @@
 h1 {
     font-family: Helvetica, sans-serif;
 }
+
+img {
+    max-width: 100px;
+}

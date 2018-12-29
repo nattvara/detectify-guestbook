@@ -30,8 +30,6 @@ ImageResponse::setResourceDirectory(__DIR__ . '/../resources/img');
 $router = new Router;
 $router->registerRoutes([
     new GET('/', \Guestbook\Http\Controllers\WelcomeController::class, 'index'),
-    new GET('/now', \Guestbook\Http\Controllers\WelcomeController::class, 'now'),
-    new POST('/post', \Guestbook\Http\Controllers\WelcomeController::class, 'post'),
 
     new GET('/app.js', \Guestbook\Http\Controllers\AssetController::class, 'js'),
     new GET('/app.css', \Guestbook\Http\Controllers\AssetController::class, 'css'),

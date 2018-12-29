@@ -26,24 +26,4 @@ class WelcomeController extends Controller {
         return new HtmlResponse('index.html');
     }
 
-    /**
-     * A simple page to test variable injection to templates
-     *
-     * @param  Request $request
-     * @return HtmlResponse
-     */
-    public function now(Request $request): HtmlResponse {
-        return new HtmlResponse('now.html', ['time' => date('H:i:s')]);
-    }
-
-    /**
-     * A simple post test
-     *
-     * @param  Request $request
-     * @return HtmlResponse
-     */
-    public function post(Request $request): HtmlResponse {
-        return new HtmlResponse('post.html', ['foo' => $request->input('foo')]);
-    }
-
 }
