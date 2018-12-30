@@ -11,6 +11,7 @@
 namespace Tests;
 
 use Guestbook\Helpers\Database;
+use PHPUnit\Framework\Constraint\Count;
 use PHPUnit\Framework\TestCase;
 use \PDO;
 use \PDOException;
@@ -93,6 +94,26 @@ class TestCaseWithDB extends TestCase {
     protected function createSchema() {
         $sql = file_get_contents(__DIR__ . '/../database/schema.sql');
         $this->db->exec($sql);
+    }
+
+    /**
+     * Assert database has a user with given public id
+     *
+     * @param  string $id public_id
+     * @return void
+     */
+    protected function assertDatabaseHasUserWithPublicId(string $id) {
+
+        $stmt = $this->db->prepare('SELECT * FROM `users` WHERE `public_id` = :public_id');
+        $stmt->execute(['public_id' => $id]);
+        $users = $stmt->fetchAll();
+
+        $this->assertThat(
+            $users,
+            new Count(1),
+            sprintf('Failed asserting user with public_id %s exists', $id)
+        );
+
     }
 
 }

@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Tests\Unit;
+namespace Tests;
 
 use Guestbook\Http\Request;
 use Guestbook\Http\Responses\HtmlResponse;
