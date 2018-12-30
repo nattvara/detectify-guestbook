@@ -45,6 +45,7 @@ class Request {
      * @return void
      */
     public function readPhpGlobals() {
+        session_start();
         $supportedMethods = [
             'GET'   => GET::class,
             'POST'  => POST::class,
@@ -119,5 +120,36 @@ class Request {
             return null;
         }
         return $this->data[$key];
+    }
+
+    /**
+     * Generate csrf token
+     *
+     * @return void
+     */
+    public function generateCsrfToken() {
+        $token = hash('sha256', bin2hex(random_bytes(10000)));
+        $_SESSION['csrf_token'] = $token;
+    }
+
+    /**
+     * Get CSRF token
+     *
+     * @return string
+     */
+    public function getCsrfToken(): string {
+        return $_SESSION['csrf_token'];
+    }
+
+    /**
+     * Check wether request contains a valid CSRF token
+     *
+     * @return bool
+     */
+    public function containsValidCsrfToken(): bool {
+        if ($this->input('csrf_token') === $this->getCsrfToken()) {
+            return true;
+        }
+        return false;
     }
 }

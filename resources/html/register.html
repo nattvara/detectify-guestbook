@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Guestbook</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="/app.css" defer async>
+</head>
+<body>
+
+    <img src="/logo.png">
+
+    <form method="POST" action="/register">
+        <label for="email">Email</label>
+        <input type="email" name="email">
+
+        <label for="password">Password</label>
+        <input type="password" name="password">
+
+        <label for="password_repeat">Repeat password</label>
+        <input type="password" name="password_repeat">
+
+        <button type="submit">Register</button>
+
+        {{csrf}}
+    </form>
+
+</body>
+</html>

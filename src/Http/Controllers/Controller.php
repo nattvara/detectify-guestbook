@@ -10,4 +10,22 @@
 
 namespace Guestbook\Http\Controllers;
 
-abstract class Controller {}
+use Guestbook\Http\Controllers\Exceptions\InvalidCsrfException;
+use Guestbook\Http\Request;
+
+abstract class Controller {
+
+    /**
+     * Guard a route with check for valid CSRF token
+     *
+     * @param  Request $request
+     * @return void
+     * @throws InvalidCsrfException
+     */
+    protected function validateCsrf(Request $request) {
+        if (!$request->containsValidCsrfToken()) {
+            throw new InvalidCsrfException('Invalid CSRF token');
+        }
+    }
+
+}
