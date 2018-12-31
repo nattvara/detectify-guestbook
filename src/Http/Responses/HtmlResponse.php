@@ -43,4 +43,36 @@ class HtmlResponse extends Response {
         $this->setResponseBody($body);
         return $this;
     }
+
+    /**
+     * Replace variables without escaping html
+     *
+     * Warning! Do not use this for untrusted data. Only stuff like hardcoded error messages!
+     *
+     * @param  array  $variables
+     * @return HtmlResponse
+     */
+    public function withHtmlVariables(array $variables): HtmlResponse {
+        $body = $this->getResponseBody();
+        foreach ($variables as $name => $value) {
+            $body = str_replace(
+                sprintf('{{%s}}', $name),
+                $value,
+                $body
+            );
+        }
+        $this->setResponseBody($body);
+        return $this;
+    }
+
+    /**
+     * Cleanup unsued variables (eg. "{{somevar}}") from returned html
+     *
+     * @return void
+     */
+    protected function cleanupUnusedVariables() {
+        $body = $this->getResponseBody();
+        $body = preg_replace('/{{.*?}}/', '', $body);
+        $this->setResponseBody($body);
+    }
 }

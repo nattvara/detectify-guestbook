@@ -13,6 +13,7 @@ namespace Guestbook\Http;
 use Guestbook\Http\Exceptions\HttpException;
 use Guestbook\Http\Routes\GET;
 use Guestbook\Http\Routes\POST;
+use Guestbook\Http\Validation\Validation;
 
 class Request {
 
@@ -40,6 +41,18 @@ class Request {
     private $data = [];
 
     /**
+     * @var Validation
+     */
+    private $validation;
+
+    /**
+     * New Request
+     */
+    public function __construct() {
+        $this->validation = new Validation;
+    }
+
+    /**
      * Read request variables from php globals
      *
      * @return void
@@ -56,6 +69,15 @@ class Request {
         $this->setMethod($supportedMethods[$_SERVER['REQUEST_METHOD']]);
         $this->setPath($_SERVER['REQUEST_URI']);
         $this->setInput($_POST);
+    }
+
+    /**
+     * Get validation
+     *
+     * @return Validation
+     */
+    public function getValidation(): Validation {
+        return $this->validation;
     }
 
     /**

@@ -44,6 +44,11 @@ abstract class Response {
      * @return void
      */
     public function write() {
+
+        if ($this instanceof HtmlResponse) {
+            $this->cleanupUnusedVariables();
+        }
+
         header(sprintf('Content-Type: ', $this->contentType));
         $fp = fopen('php://output', 'w');
         fwrite($fp, $this->getResponseBody());
