@@ -18,5 +18,6 @@
         <env name="password" value="root"/>
         <env name="port" value="3306"/>
         <env name="db" value="guestbook_test"/>
+        <env name="pwnedpasswords_endpoint" value="https://api.pwnedpasswords.com/range/"/>
     </php>
 </phpunit>
