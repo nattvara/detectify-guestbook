@@ -35,7 +35,9 @@ class WelcomeController extends Controller {
      */
     public function me(Request $request): HtmlResponse {
         $this->guard($request);
-        return new HtmlResponse('me.html', ['name' => $request->user()->getName()]);
+        return (new HtmlResponse('me.html', [
+            'name' => $request->user()->getName()
+        ]))->withCsrfToken($request);
     }
 
 }

@@ -17,6 +17,7 @@ use Guestbook\Http\Routes\GET;
 use Guestbook\Http\Routes\POST;
 use Guestbook\Http\Validation\Validation;
 use Guestbook\Models\Cookie;
+use Guestbook\Models\Exceptions\UserNotFoundException;
 use Guestbook\Models\User;
 
 class Request {
@@ -182,6 +183,17 @@ class Request {
     }
 
     /**
+     * Destroy session
+     *
+     * @return void
+     */
+    public function destroySession() {
+        session_destroy();
+        $time = time() - (10 * 365 * 24 * 60 * 60); // - 10 years
+        setcookie(session_name(), '', $time);
+    }
+
+    /**
      * Add cookie to response
      *
      * @param Cookie $cookie
@@ -189,6 +201,21 @@ class Request {
     public function addCookie(Cookie $cookie) {
         $time = time() + (10 * 365 * 24 * 60 * 60); // 10 years
         setcookie('token', $cookie->getToken(), $time, null, null, false, true);
+    }
+
+    /**
+     * Clear cookies
+     *
+     * @return void
+     */
+    public function clearCookies() {
+        if (!isset($_COOKIE['token'])) {
+            return;
+        }
+        $token = $_COOKIE['token'];
+        Cookie::deactivateToken($token);
+        $time = time() - (10 * 365 * 24 * 60 * 60); // - 10 years
+        setcookie('token', '', $time);
     }
 
     /**
@@ -200,8 +227,12 @@ class Request {
             return;
         }
         $token  = $_COOKIE['token'];
-        $user   = User::findByCookieToken($token);
-        $user->signIn($this, false);
+        try {
+            $user   = User::findByCookieToken($token);
+            $user->signIn($this, false);
+        } catch (UserNotFoundException $e) {
+            $this->clearCookies();
+        }
     }
 
     /**

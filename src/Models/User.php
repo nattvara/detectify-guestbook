@@ -102,6 +102,17 @@ class User {
     }
 
     /**
+     * Sign user out
+     *
+     * @param  Request $request
+     * @return void
+     */
+    public function signOut(Request $request) {
+        $request->clearCookies();
+        $request->destroySession();
+    }
+
+    /**
      * Find user by email
      *
      * @param  string $email
@@ -167,7 +178,7 @@ class User {
      */
     public static function findByCookieToken(string $token): User {
         $db = Database::getPDOConnection();
-        $stmt = $db->prepare('SELECT * FROM `cookies` WHERE `token` = :token');
+        $stmt = $db->prepare('SELECT * FROM `cookies` WHERE `token` = :token AND `valid` = 1;');
         $stmt->execute(['token' => $token]);
         $row = $stmt->fetch();
         if (!$row) {

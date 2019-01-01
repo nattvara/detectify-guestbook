@@ -40,6 +40,7 @@ class LoginController extends Controller {
      */
     public function login(Request $request): Response {
 
+        $this->guest($request);
         $this->validateCsrf($request);
 
         $this->addValidationRule($request, 'email', 'required');
@@ -99,6 +100,7 @@ class LoginController extends Controller {
      */
     public function register(Request $request): HtmlResponse {
 
+        $this->guest($request);
         $this->validateCsrf($request);
 
         $this->addValidationRule($request, 'email', 'required');
@@ -133,5 +135,21 @@ class LoginController extends Controller {
         $user->signIn($request);
 
         return new HtmlResponse('registered.html');
+    }
+
+    /**
+     * Log the user out
+     *
+     * @param  Request $request
+     * @return RedirectResponse
+     */
+    public function logout(Request $request): RedirectResponse {
+
+        $this->guard($request);
+        $this->validateCsrf($request);
+
+        $request->user()->signOut($request);
+
+        return new RedirectResponse('/');
     }
 }

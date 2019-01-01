@@ -11,5 +11,12 @@
 
     <p>Hello {{name}}</p>
 
+    <form method="POST" action="/logout">
+
+        <button type="submit">Logout</button>
+
+        {{csrf}}
+    </form>
+
 </body>
 </html>

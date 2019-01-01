@@ -35,6 +35,7 @@ $router->registerRoutes([
     new POST('/login', \Guestbook\Http\Controllers\LoginController::class, 'login'),
     new GET('/register', \Guestbook\Http\Controllers\LoginController::class, 'viewRegisterForm'),
     new POST('/register', \Guestbook\Http\Controllers\LoginController::class, 'register'),
+    new POST('/logout', \Guestbook\Http\Controllers\LoginController::class, 'logout'),
     new GET('/me', \Guestbook\Http\Controllers\WelcomeController::class, 'me'),
 
     new GET('/app.js', \Guestbook\Http\Controllers\AssetController::class, 'js'),
