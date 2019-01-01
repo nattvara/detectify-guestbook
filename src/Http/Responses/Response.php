@@ -20,6 +20,13 @@ abstract class Response {
     private $responseBody = '';
 
     /**
+     * Headers to include in response
+     *
+     * @var array
+     */
+    protected $headers = [];
+
+    /**
      * Set response body
      *
      * @param string $responseBody
@@ -47,6 +54,10 @@ abstract class Response {
 
         if ($this instanceof HtmlResponse) {
             $this->cleanupUnusedVariables();
+        }
+
+        foreach ($this->headers as $header) {
+            header($header);
         }
 
         header(sprintf('Content-Type: ', $this->contentType));

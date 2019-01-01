@@ -11,11 +11,17 @@
 namespace Guestbook\Models;
 
 use Guestbook\Helpers\Database;
+use Guestbook\Http\Request;
 use Guestbook\Models\Exceptions\InvalidPasswordException;
 use Guestbook\Models\Exceptions\UserNotFoundException;
 use \PDO;
 
 class User {
+
+    /**
+     * @var int
+     */
+    private $id;
 
     /**
      * @var string
@@ -79,6 +85,23 @@ class User {
     }
 
     /**
+     * Sign user in
+     *
+     * @param  Request      $request
+     * @param  bool|boolean $shouldMakeCookie
+     * @return void
+     */
+    public function signIn(Request $request, bool $shouldMakeCookie = true) {
+        $request->addSessionVariable('user_id', $this->publicId);
+
+        if ($shouldMakeCookie) {
+            $cookie = new Cookie($this);
+            $cookie->store();
+            $request->addCookie($cookie);
+        }
+    }
+
+    /**
      * Find user by email
      *
      * @param  string $email
@@ -93,8 +116,78 @@ class User {
         if (!$row) {
             throw new UserNotFoundException(sprintf('no user with email \'%s\' exists', $email));
         }
+        $user = User::fromDBRecord($row, $db);
+        return $user;
+    }
+
+    /**
+     * Find user by public_id
+     *
+     * @param  string $id
+     * @return User
+     * @throws UserNotFoundException
+     */
+    public static function findByPublicId(string $id): User {
+        $db = Database::getPDOConnection();
+        $stmt = $db->prepare('SELECT * FROM `users` WHERE `public_id` = :id');
+        $stmt->execute(['id' => $id]);
+        $row = $stmt->fetch();
+        if (!$row) {
+            throw new UserNotFoundException(sprintf('no user with public_id \'%s\' exists', $id));
+        }
+        $user = User::fromDBRecord($row, $db);
+        return $user;
+    }
+
+    /**
+     * Find user by id
+     *
+     * @param  string $id
+     * @return User
+     * @throws UserNotFoundException
+     */
+    public static function findById(int $id): User {
+        $db = Database::getPDOConnection();
+        $stmt = $db->prepare('SELECT * FROM `users` WHERE `id` = :id');
+        $stmt->execute(['id' => $id]);
+        $row = $stmt->fetch();
+        if (!$row) {
+            throw new UserNotFoundException(sprintf('no user with id \'%d\' exists', $id));
+        }
+        $user = User::fromDBRecord($row, $db);
+        return $user;
+    }
+
+    /**
+     * Find user by cookie token
+     *
+     * @param  string $token
+     * @return User
+     * @throws UserNotFoundException
+     */
+    public static function findByCookieToken(string $token): User {
+        $db = Database::getPDOConnection();
+        $stmt = $db->prepare('SELECT * FROM `cookies` WHERE `token` = :token');
+        $stmt->execute(['token' => $token]);
+        $row = $stmt->fetch();
+        if (!$row) {
+            throw new UserNotFoundException(sprintf('no user with the cookie token \'%s\' exists', $id));
+        }
+        $user = User::findById($row['user_id']);
+        return $user;
+    }
+
+    /**
+     * Create user object from db record
+     *
+     * @param  array  $row
+     * @param  PDO    $db
+     * @return User
+     */
+    private static function fromDBRecord(array $row, PDO $db): User {
         $user = new User;
         $user->setDB($db);
+        $user->setId($row['id']);
         $user->setName($row['name']);
         $user->setEmail($row['email']);
         $user->setPublicId($row['public_id']);
@@ -110,6 +203,25 @@ class User {
      */
     public function setPublicId(string $publicId) {
         $this->publicId = $publicId;
+    }
+
+    /**
+     * Set id
+     *
+     * @param int $id
+     * @return void
+     */
+    public function setId(int $id) {
+        $this->id = $id;
+    }
+
+    /**
+     * Get id
+     *
+     * @return int
+     */
+    public function getId(): int {
+        return $this->id;
     }
 
     /**

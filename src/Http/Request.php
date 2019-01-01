@@ -11,9 +11,13 @@
 namespace Guestbook\Http;
 
 use Guestbook\Http\Exceptions\HttpException;
+use Guestbook\Http\Exceptions\SessionVariableNotFoundException;
+use Guestbook\Http\Exceptions\UnauthenticatedException;
 use Guestbook\Http\Routes\GET;
 use Guestbook\Http\Routes\POST;
 use Guestbook\Http\Validation\Validation;
+use Guestbook\Models\Cookie;
+use Guestbook\Models\User;
 
 class Request {
 
@@ -46,6 +50,11 @@ class Request {
     private $validation;
 
     /**
+     * @var User
+     */
+    private $user;
+
+    /**
      * New Request
      */
     public function __construct() {
@@ -69,6 +78,7 @@ class Request {
         $this->setMethod($supportedMethods[$_SERVER['REQUEST_METHOD']]);
         $this->setPath($_SERVER['REQUEST_URI']);
         $this->setInput($_POST);
+        $this->readTokenFromCookiesIfExistsAndSignUserIn();
     }
 
     /**
@@ -145,13 +155,88 @@ class Request {
     }
 
     /**
+     * Add session variables
+     *
+     * @param string $name
+     * @param mixed  $value
+     * @return void
+     */
+    public function addSessionVariable(string $name, $value) {
+        $_SESSION[$name] = $value;
+    }
+
+    /**
+     * Get session variable
+     *
+     * @param  string $name
+     * @return mixed
+     */
+    public function getSessionVariable(string $name) {
+        if (!isset($_SESSION[$name])) {
+            throw new SessionVariableNotFoundException(sprintf('did not find any session variable with the name \'%s\'', $name));
+        }
+        return $_SESSION[$name];
+    }
+
+    /**
+     * Add cookie to response
+     *
+     * @param Cookie $cookie
+     */
+    public function addCookie(Cookie $cookie) {
+        $time = time() + (10 * 365 * 24 * 60 * 60); // 10 years
+        setcookie('token', $cookie->getToken(), $time, null, null, false, true);
+    }
+
+    /**
+     * Read token from cookies if it exists and sign user in
+     * @return void
+     */
+    private function readTokenFromCookiesIfExistsAndSignUserIn() {
+        if (!isset($_COOKIE['token'])) {
+            return;
+        }
+        $token  = $_COOKIE['token'];
+        $user   = User::findByCookieToken($token);
+        $user->signIn($this, false);
+    }
+
+    /**
+     * Get authenticated user
+     *
+     * @return User
+     */
+    public function user(): User {
+        if (!$this->user) {
+            try {
+                $this->user = User::findByPublicId($this->getSessionVariable('user_id'));
+            } catch (SessionVariableNotFoundException $e) {
+                throw new UnauthenticatedException('tried to use an authenticated user and found none in the request');
+            }
+        }
+        return $this->user;
+    }
+
+    /**
+     * Check if request has an authenticated user
+     *
+     * @return boolean
+     */
+    public function hasAuthenticatedUser(): bool {
+        if (!$this->user) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Generate csrf token
      *
      * @return void
      */
     public function generateCsrfToken() {
         $token = hash('sha256', bin2hex(random_bytes(10000)));
-        $_SESSION['csrf_token'] = $token;
+        $this->addSessionVariable('csrf_token', $token);
     }
 
     /**
@@ -160,7 +245,7 @@ class Request {
      * @return string
      */
     public function getCsrfToken(): string {
-        return $_SESSION['csrf_token'];
+        return $this->getSessionVariable('csrf_token');
     }
 
     /**

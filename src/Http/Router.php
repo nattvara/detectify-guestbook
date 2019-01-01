@@ -12,7 +12,9 @@ namespace Guestbook\Http;
 
 use Guestbook\Http\Controllers\Exceptions\InvalidCsrfException;
 use Guestbook\Http\Exceptions\RouteNotFoundException;
+use Guestbook\Http\Exceptions\UnauthenticatedException;
 use Guestbook\Http\Responses\HtmlResponse;
+use Guestbook\Http\Responses\RedirectResponse;
 use Guestbook\Http\Responses\Response;
 use Guestbook\Http\Routes\Route;
 
@@ -81,6 +83,8 @@ class Router {
             return $route->execute($request);
         } catch (RouteNotFoundException $e) {
             return new HtmlResponse('404.html');
+        } catch (UnauthenticatedException $e) {
+            return new RedirectResponse('/login');
         } catch (InvalidCsrfException $e) {
             return new HtmlResponse('error.html', ['reason' => 'Invalid CSRF Token']);
         }

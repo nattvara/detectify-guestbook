@@ -13,6 +13,11 @@ namespace Guestbook\Http\Controllers;
 use Guestbook\Http\Request;
 use Guestbook\Http\Responses\HtmlResponse;
 use Guestbook\Http\Responses\PlainTextResponse;
+use Guestbook\Http\Responses\RedirectResponse;
+use Guestbook\Http\Responses\Response;
+use Guestbook\Models\Exceptions\InvalidPasswordException;
+use Guestbook\Models\Exceptions\UserNotFoundException;
+use Guestbook\Models\User;
 
 class LoginController extends Controller {
 
@@ -23,7 +28,55 @@ class LoginController extends Controller {
      * @return HtmlResponse
      */
     public function viewLoginForm(Request $request): HtmlResponse {
-        return new HtmlResponse('login.html');
+        return (new HtmlResponse('login.html'))->withCsrfToken($request);
+    }
+
+    /**
+     * Login in a user
+     *
+     * @param  Request $request
+     * @return RedirectResponse|HtmlResponse
+     */
+    public function login(Request $request): Response {
+
+        $this->validateCsrf($request);
+
+        $this->addValidationRule($request, 'email', 'required');
+        $this->addValidationRule($request, 'email', 'email');
+        $this->addValidationRule($request, 'password', 'required');
+
+        if (!$this->validateRequest($request)) {
+            return (new HtmlResponse('login.html', [
+                'email' => $request->input('email') ? $request->input('email') : ''
+            ]))->withCsrfToken($request)
+            ->withHtmlVariables([
+                'errors' => $this->formatErrorsAsHtml($this->errors)
+            ]);
+        }
+
+        $credentials = true;
+        try {
+            $user = User::authenticate($request->input('email'), $request->input('password'));
+        } catch (UserNotFoundException $e) {
+            $credentials = false;
+        } catch (InvalidPasswordException $e) {
+            $credentials = false;
+        }
+
+        if (!$credentials) {
+            return (new HtmlResponse('login.html', [
+                'email' => $request->input('email') ? $request->input('email') : ''
+            ]))->withCsrfToken($request)
+            ->withHtmlVariables([
+                'errors' => $this->formatErrorsAsHtml([
+                    ['human_friendly' => 'Wrong email and/or password']
+                ])
+            ]);
+        }
+
+        $user->signIn($request);
+
+        return new RedirectResponse('/me');
     }
 
     /**
@@ -48,6 +101,7 @@ class LoginController extends Controller {
 
         $this->addValidationRule($request, 'email', 'required');
         $this->addValidationRule($request, 'email', 'email');
+        $this->addValidationRule($request, 'email', 'unique', ['table' => 'users', 'column' => 'email']);
         $this->addValidationRule($request, 'email', 'length', ['min' => 5, 'max' => 128]);
         $this->addValidationRule($request, 'name', 'required');
         $this->addValidationRule($request, 'name', 'length', ['min' => 2, 'max' => 128]);
@@ -66,6 +120,15 @@ class LoginController extends Controller {
                 'errors' => $this->formatErrorsAsHtml($this->errors)
             ]);
         }
+
+        // Store user
+        $user = User::create(
+            $request->input('email'),
+            $request->input('password'),
+            $request->input('name')
+        );
+
+        $user->signIn($request);
 
         return new HtmlResponse('registered.html');
     }

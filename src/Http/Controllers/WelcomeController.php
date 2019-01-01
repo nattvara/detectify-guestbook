@@ -26,4 +26,15 @@ class WelcomeController extends Controller {
         return new HtmlResponse('index.html');
     }
 
+    /**
+     * The profile (me) page
+     *
+     * @param  Request $request
+     * @return HtmlResponse
+     */
+    public function me(Request $request): HtmlResponse {
+        $this->guard($request);
+        return new HtmlResponse('me.html', ['name' => $request->user()->getName()]);
+    }
+
 }

@@ -9,12 +9,21 @@
 
     <img src="/logo.png">
 
+    <div>
+        {{errors}}
+    </div>
+
     <form method="POST" action="/login">
+
         <label for="email">Email</label>
-        <input type="email" name="email">
+        <input type="email" name="email" value="{{email}}">
+
         <label for="password">Password</label>
         <input type="password" name="password">
+
         <button type="submit">Login</button>
+
+        {{csrf}}
     </form>
 
 </body>

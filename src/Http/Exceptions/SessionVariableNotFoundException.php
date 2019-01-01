@@ -10,4 +10,4 @@
 
 namespace Guestbook\Http\Exceptions;
 
-class RouteNotFoundException extends \Exception {}
+class SessionVariableNotFoundException extends \Exception {}

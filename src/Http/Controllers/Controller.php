@@ -11,6 +11,7 @@
 namespace Guestbook\Http\Controllers;
 
 use Guestbook\Http\Controllers\Exceptions\InvalidCsrfException;
+use Guestbook\Http\Exceptions\UnauthenticatedException;
 use Guestbook\Http\Request;
 use Guestbook\Http\Validation\RuleBuilder;
 
@@ -33,6 +34,19 @@ abstract class Controller {
     protected function validateCsrf(Request $request) {
         if (!$request->containsValidCsrfToken()) {
             throw new InvalidCsrfException('Invalid CSRF token');
+        }
+    }
+
+    /**
+     * Guard request for authenticated users
+     *
+     * @param  Request $request
+     * @return void
+     * @throws UnauthenticatedException if user is not authenticated
+     */
+    protected function guard(Request $request) {
+        if ($request->hasAuthenticatedUser()) {
+            throw new UnauthenticatedException;
         }
     }
 
