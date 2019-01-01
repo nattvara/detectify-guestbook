@@ -8,7 +8,6 @@
  * file that was distributed with this source code.
  */
 
-
 namespace Guestbook\Http\Exceptions;
 
 class RouteNotFoundException extends \Exception {}

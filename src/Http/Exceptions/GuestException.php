@@ -1,3 +1,4 @@
+<?php
 /*
  * This file is part of nattvara/detectify-guestbook.
  *
@@ -7,15 +8,6 @@
  * file that was distributed with this source code.
  */
 
-h1 {
-    font-family: Helvetica, sans-serif;
-}
+namespace Guestbook\Http\Exceptions;
 
-img {
-    max-width: 100px;
-}
-
-input, label, button {
-    float: left;
-    margin: 5px;
-}
+class GuestException extends \Exception {}

@@ -7,8 +7,16 @@
 </head>
 <body>
 
-    <h1>The value was: {{foo}}</h1>
+    <img src="/logo.png">
 
-    <script type="text/javascript" src="/app.js"></script>
+    <p>Hello {{name}}</p>
+
+    <form method="POST" action="/logout">
+
+        <button type="submit">Logout</button>
+
+        {{csrf}}
+    </form>
+
 </body>
 </html>

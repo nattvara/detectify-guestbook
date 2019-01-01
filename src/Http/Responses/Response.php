@@ -20,6 +20,13 @@ abstract class Response {
     private $responseBody = '';
 
     /**
+     * Headers to include in response
+     *
+     * @var array
+     */
+    protected $headers = [];
+
+    /**
      * Set response body
      *
      * @param string $responseBody
@@ -44,6 +51,15 @@ abstract class Response {
      * @return void
      */
     public function write() {
+
+        if ($this instanceof HtmlResponse) {
+            $this->cleanupUnusedVariables();
+        }
+
+        foreach ($this->headers as $header) {
+            header($header);
+        }
+
         header(sprintf('Content-Type: ', $this->contentType));
         $fp = fopen('php://output', 'w');
         fwrite($fp, $this->getResponseBody());

@@ -23,27 +23,21 @@ class WelcomeController extends Controller {
      * @return HtmlResponse
      */
     public function index(Request $request): HtmlResponse {
+        $this->guest($request);
         return new HtmlResponse('index.html');
     }
 
     /**
-     * A simple page to test variable injection to templates
+     * The profile (me) page
      *
      * @param  Request $request
      * @return HtmlResponse
      */
-    public function now(Request $request): HtmlResponse {
-        return new HtmlResponse('now.html', ['time' => date('H:i:s')]);
-    }
-
-    /**
-     * A simple post test
-     *
-     * @param  Request $request
-     * @return HtmlResponse
-     */
-    public function post(Request $request): HtmlResponse {
-        return new HtmlResponse('post.html', ['foo' => $request->input('foo')]);
+    public function me(Request $request): HtmlResponse {
+        $this->guard($request);
+        return (new HtmlResponse('me.html', [
+            'name' => $request->user()->getName()
+        ]))->withCsrfToken($request);
     }
 
 }

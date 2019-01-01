@@ -8,9 +8,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Tests\Unit;
+namespace Tests;
 
+use Guestbook\Http\Request;
 use Guestbook\Http\Responses\HtmlResponse;
+use Guestbook\Http\Routes\GET;
 use PHPUnit\Framework\TestCase;
 
 class HtmlResponseTest extends TestCase {
@@ -72,6 +74,28 @@ class HtmlResponseTest extends TestCase {
 
         $this->assertStringContainsString('foo', $this->response->getResponseBody());
         $this->assertStringContainsString('bar', $this->response->getResponseBody());
+
+    }
+
+    /**
+     * Test csrf token can be generated and stored in session
+     *
+     * @return void
+     */
+    public function test_csrf_can_be_generated_and_stored_in_session() {
+
+        $request = new Request;
+        $request->setPath('/');
+        $request->setMethod(GET::class);
+
+        HtmlResponse::setResourceDirectory($this->resourceDir);
+        $this->response = (new HtmlResponse('csrf.html'))->withCsrfToken($request);
+
+        $csrfInput = sprintf(
+            '<input type="hidden" name="csrf_token" value="%s">',
+            $request->getCsrfToken()
+        );
+        $this->assertStringContainsString($csrfInput, $this->response->getResponseBody());
 
     }
 
