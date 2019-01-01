@@ -1,2 +1,6 @@
 vendor/
 .env.php
+node_modules/
+dist/*
+!dist/.gitkeep
+resources/sass/element-theme

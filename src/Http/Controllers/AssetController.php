@@ -24,7 +24,7 @@ class AssetController extends Controller {
      * @return JavascriptResponse
      */
     public function js(Request $request): JavascriptResponse {
-        return new JavascriptResponse('app.js');
+        return new JavascriptResponse('main.js');
     }
 
     /**

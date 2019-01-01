@@ -24,7 +24,7 @@ $request = new Request;
 $request->readPhpGlobals();
 
 HtmlResponse::setResourceDirectory(__DIR__ . '/../resources/html');
-JavascriptResponse::setResourceDirectory(__DIR__ . '/../resources/js');
+JavascriptResponse::setResourceDirectory(__DIR__ . '/../dist');
 CssResponse::setResourceDirectory(__DIR__ . '/../resources/css');
 ImageResponse::setResourceDirectory(__DIR__ . '/../resources/img');
 
@@ -38,7 +38,7 @@ $router->registerRoutes([
     new POST('/logout', \Guestbook\Http\Controllers\LoginController::class, 'logout'),
     new GET('/me', \Guestbook\Http\Controllers\WelcomeController::class, 'me'),
 
-    new GET('/app.js', \Guestbook\Http\Controllers\AssetController::class, 'js'),
+    new GET('/main.js', \Guestbook\Http\Controllers\AssetController::class, 'js'),
     new GET('/app.css', \Guestbook\Http\Controllers\AssetController::class, 'css'),
     new GET('/logo.png', \Guestbook\Http\Controllers\AssetController::class, 'logo'),
 ]);
