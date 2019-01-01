@@ -78,7 +78,10 @@ class Request {
         $this->setMethod($supportedMethods[$_SERVER['REQUEST_METHOD']]);
         $this->setPath($_SERVER['REQUEST_URI']);
         $this->setInput($_POST);
-        $this->readTokenFromCookiesIfExistsAndSignUserIn();
+        $this->readUserFromSessionIfItExists();
+        if (!$this->hasAuthenticatedUser) {
+            $this->readTokenFromCookiesIfExistsAndSignUserIn();
+        }
     }
 
     /**
@@ -199,6 +202,19 @@ class Request {
         $token  = $_COOKIE['token'];
         $user   = User::findByCookieToken($token);
         $user->signIn($this, false);
+    }
+
+    /**
+     * Read user from session if user_id exists in the session
+     *
+     * @return void
+     */
+    private function readUserFromSessionIfItExists() {
+        try {
+            $this->user();
+        } catch (UnauthenticatedException $e) {
+            return;
+        }
     }
 
     /**

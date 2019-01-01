@@ -11,6 +11,7 @@
 namespace Guestbook\Http\Controllers;
 
 use Guestbook\Http\Controllers\Exceptions\InvalidCsrfException;
+use Guestbook\Http\Exceptions\GuestException;
 use Guestbook\Http\Exceptions\UnauthenticatedException;
 use Guestbook\Http\Request;
 use Guestbook\Http\Validation\RuleBuilder;
@@ -45,8 +46,21 @@ abstract class Controller {
      * @throws UnauthenticatedException if user is not authenticated
      */
     protected function guard(Request $request) {
-        if ($request->hasAuthenticatedUser()) {
+        if (!$request->hasAuthenticatedUser()) {
             throw new UnauthenticatedException;
+        }
+    }
+
+    /**
+     * Only allow route for unauthenticated users
+     *
+     * @param  Request $request
+     * @return void
+     * @throws GuestException if user IS authenticated
+     */
+    protected function guest(Request $request) {
+        if ($request->hasAuthenticatedUser()) {
+            throw new GuestException;
         }
     }
 

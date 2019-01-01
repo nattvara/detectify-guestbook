@@ -28,6 +28,7 @@ class LoginController extends Controller {
      * @return HtmlResponse
      */
     public function viewLoginForm(Request $request): HtmlResponse {
+        $this->guest($request);
         return (new HtmlResponse('login.html'))->withCsrfToken($request);
     }
 
@@ -86,6 +87,7 @@ class LoginController extends Controller {
      * @return HtmlResponse
      */
     public function viewRegisterForm(Request $request): HtmlResponse {
+        $this->guest($request);
         return (new HtmlResponse('register.html'))->withCsrfToken($request);
     }
 

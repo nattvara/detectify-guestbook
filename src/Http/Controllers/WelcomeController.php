@@ -23,6 +23,7 @@ class WelcomeController extends Controller {
      * @return HtmlResponse
      */
     public function index(Request $request): HtmlResponse {
+        $this->guest($request);
         return new HtmlResponse('index.html');
     }
 
