@@ -320,6 +320,12 @@ class User {
             'password'  => $this->password,
             'name'      => $this->name,
         ]);
+
+        // Fetch the id for the user just created
+        $stmt = $this->db->prepare('SELECT `id` FROM `users` WHERE `public_id` = :id;');
+        $stmt->execute(['id' => $this->publicId]);
+        $row = $stmt->fetch();
+        $this->setId($row['id']);
     }
 
     /**
