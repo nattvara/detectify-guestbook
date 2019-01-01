@@ -26,6 +26,7 @@ class RuleBuilder {
         'length'                => Rules\Length::class,
         'match'                 => Rules\Match::class,
         'pwnedpasswords.com'    => Rules\Pwnedpasswords::class,
+        'unique'                => Rules\Unique::class,
     ];
 
     /**

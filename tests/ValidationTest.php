@@ -14,13 +14,14 @@ use Guestbook\Http\Request;
 use Guestbook\Http\Routes\POST;
 use Guestbook\Http\Validation\RuleBuilder;
 use Guestbook\Http\Validation\Validation;
+use Guestbook\Models\User;
 use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Response;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCaseWithDB;
 
-class ValidationTest extends TestCase {
+class ValidationTest extends TestCaseWithDB {
 
     /**
      * @var Validation
@@ -38,6 +39,8 @@ class ValidationTest extends TestCase {
      * @return void
      */
     public function setUp() {
+
+        parent::setUp();
 
         $this->validation = new Validation;
 
@@ -251,6 +254,30 @@ class ValidationTest extends TestCase {
 
         // A good password
         $this->request->setInput(['a_password' => '353e8061f2befecb6818ba0c034c632fb0bcae1b']);
+        $this->assertTrue($this->validation->validate($this->request));
+
+    }
+
+    /**
+     * Test unique rule
+     *
+     * @return void
+     */
+    public function test_unique_rule() {
+
+        // Create a few users
+        User::create('foo@email.com', 'secret', 'John Doe');
+        User::create('bar@email.com', 'secret', 'Jane Doe');
+
+        $rule = RuleBuilder::make('some_field', 'unique', ['table' => 'users', 'column' => 'email']);
+        $this->validation->addRule($rule);
+
+        // Not unique
+        $this->request->setInput(['some_field' => 'foo@email.com']);
+        $this->assertFalse($this->validation->validate($this->request));
+
+        // Is unique
+        $this->request->setInput(['some_field' => 'baz@email.com']);
         $this->assertTrue($this->validation->validate($this->request));
 
     }

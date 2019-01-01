@@ -32,4 +32,46 @@ class Database {
         return new PDO($dsn, getenv('username'), getenv('password'), $options);
     }
 
+    /**
+     * Get table list in db
+     *
+     * @param  PDO    $db
+     * @return array
+     */
+    public static function getTableList(PDO $db): array {
+
+        $dbName = $db->query('SELECT DATABASE();')->fetchColumn();
+        $stmt   = $db->prepare('SELECT `TABLE_NAME` FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_SCHEMA` = :db;');
+        $stmt->execute(['db' => $dbName]);
+        $rows   = $stmt->fetchAll();
+        $tables = [];
+        foreach ($rows as $row) {
+            $tables[] = $row['TABLE_NAME'];
+        }
+
+        return $tables;
+
+    }
+
+    /**
+     * Get column list in table
+     *
+     * @param  PDO    $db
+     * @param  string $table
+     * @return array
+     */
+    public static function getColumnList(PDO $db, string $table): array {
+
+        $dbName = $db->query('SELECT DATABASE();')->fetchColumn();
+        $stmt   = $db->prepare('SELECT `COLUMN_NAME` FROM `INFORMATION_SCHEMA`.`COLUMNS` WHERE `TABLE_SCHEMA` = :db AND `TABLE_NAME` = :table;');
+        $stmt->execute(['db' => $dbName, 'table' => $table]);
+        $rows   = $stmt->fetchAll();
+        $columns = [];
+        foreach ($rows as $row) {
+            $columns[] = $row['COLUMN_NAME'];
+        }
+
+        return $columns;
+
+    }
 }
