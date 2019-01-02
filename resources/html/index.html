@@ -9,11 +9,17 @@
 <body>
 
     <div id="app">
-        <page>
+        <page
+            :authenticated="{{authenticated}}"
+            name="{{name}}"
+            email="{{email}}">
             <messages></messages>
         </page>
     </div>
 
+    <form id="logout-form" action="/logout" method="POST" style="display: none;">
+        {{csrf}}
+    </form>
     <script type="text/javascript" src="/main.js"></script>
 </body>
 </html>

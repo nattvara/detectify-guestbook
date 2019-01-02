@@ -1,5 +1,4 @@
 <style lang="scss" scoped>
-
     @import '~@/variables';
 
     .el-card {
@@ -58,6 +57,7 @@
 
         /**
          * Components properties
+         *
          * @type {Object}
          */
         props: {

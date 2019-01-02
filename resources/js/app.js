@@ -15,6 +15,38 @@ Vue.use(Element, { locale })
 Vue.component('page', require('./components/Page/Main.vue').default);
 Vue.component('messages', require('./components/Messages/Main.vue').default);
 
+Vue.mixin({
+    methods: {
+
+        /**
+         * Goto path
+         *
+         * @param  {String} path
+         * @return {void}
+         */
+        goTo(path) {
+            window.location.href = path;
+        },
+
+        /**
+         * Add an alert method used across components to display errors
+         *
+         * @param  {string} message
+         * @return {void}
+         */
+        alertError(message, type = 'error', duration = 3000, showClose = false) {
+            this.$message({
+                showClose: true,
+                message: message,
+                type: type,
+                duration: duration,
+                showClose: showClose
+            });
+        },
+    }
+});
+
+
 new Vue({
-   el: '#app'
- });
+    el: '#app'
+});

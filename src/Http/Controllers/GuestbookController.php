@@ -22,6 +22,10 @@ class GuestbookController extends Controller {
      * @return HtmlResponse
      */
     public function index(Request $request): HtmlResponse {
-        return new HtmlResponse('index.html');
+        return (new HtmlResponse('index.html', [
+            'authenticated' => $request->hasAuthenticatedUser() ? 'true' : 'false',
+            'name'          => $request->hasAuthenticatedUser() ? $request->user()->getName() : false,
+            'email'         => $request->hasAuthenticatedUser() ? $request->user()->getEmail() : false,
+        ]))->withCsrfToken($request);
     }
 }
