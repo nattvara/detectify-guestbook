@@ -12,20 +12,8 @@ namespace Guestbook\Http\Controllers;
 
 use Guestbook\Http\Request;
 use Guestbook\Http\Responses\HtmlResponse;
-use Guestbook\Http\Responses\PlainTextResponse;
 
-class WelcomeController extends Controller {
-
-    /**
-     * The index page
-     *
-     * @param  Request $request
-     * @return HtmlResponse
-     */
-    public function index(Request $request): HtmlResponse {
-        $this->guest($request);
-        return new HtmlResponse('index.html');
-    }
+class UserController extends Controller {
 
     /**
      * The profile (me) page

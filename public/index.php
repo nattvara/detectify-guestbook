@@ -30,16 +30,18 @@ ImageResponse::setResourceDirectory(__DIR__ . '/../resources/img');
 
 $router = new Router;
 $router->registerRoutes([
-    new GET('/', \Guestbook\Http\Controllers\WelcomeController::class, 'index'),
     new GET('/login', \Guestbook\Http\Controllers\LoginController::class, 'viewLoginForm'),
     new POST('/login', \Guestbook\Http\Controllers\LoginController::class, 'login'),
     new GET('/register', \Guestbook\Http\Controllers\LoginController::class, 'viewRegisterForm'),
     new POST('/register', \Guestbook\Http\Controllers\LoginController::class, 'register'),
     new POST('/logout', \Guestbook\Http\Controllers\LoginController::class, 'logout'),
-    new GET('/me', \Guestbook\Http\Controllers\WelcomeController::class, 'me'),
+
+    new GET('/me', \Guestbook\Http\Controllers\UserController::class, 'me'),
+
+    new GET('/', \Guestbook\Http\Controllers\GuestbookController::class, 'index'),
 
     new GET('/main.js', \Guestbook\Http\Controllers\AssetController::class, 'js'),
-    new GET('/app.css', \Guestbook\Http\Controllers\AssetController::class, 'css'),
+    new GET('/main.css', \Guestbook\Http\Controllers\AssetController::class, 'css'),
     new GET('/logo.png', \Guestbook\Http\Controllers\AssetController::class, 'logo'),
 ]);
 

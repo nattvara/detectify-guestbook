@@ -7,20 +7,9 @@
  * file that was distributed with this source code.
  */
 
-@import 'variables';
+$font-color: #000000;
 
-body, p, a, h1, h2, h3, h4, h5 {
-    font-family: 'Philosopher', serif;
-}
-
-body {
-    background: $primary;
-}
-
-.message.el-card > .el-card__body {
-    padding-top: 0;
-}
-
-.el-badge__content {
-    border: none !important;
-}
+$primary: #ffe9b3;
+$secondary: mix($primary, $font-color, 90%);
+$action: #450099;
+$danger: #ff003b;

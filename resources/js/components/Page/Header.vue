@@ -1,11 +1,15 @@
 <style lang="scss" scoped>
+
     h1 {
-        color: red;
+        font-size: 60px;
+        text-align: center;
+        width: 100%;
     }
+
 </style>
 
 <template>
-    <h1>Hello from the Bat</h1>
+    <h1>The Guestbook Challenge</h1>
 </template>
 <script>
     export default {}

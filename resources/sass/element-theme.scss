@@ -1,3 +1,6 @@
+
+@import 'resources/sass/variables';
+
 /* Element Chalk Variables */
 
 /* Transition
@@ -14,7 +17,7 @@ $--color-transition-base: color .2s cubic-bezier(.645,.045,.355,1) !default;
 $--color-white: #fff !default;
 $--color-black: #000 !default;
 
-$--color-primary: #409EFF !default;
+$--color-primary: $action !default;
 $--color-primary-light-1: mix($--color-white, $--color-primary, 10%) !default; /* 53a8ff */
 $--color-primary-light-2: mix($--color-white, $--color-primary, 20%) !default; /* 66b1ff */
 $--color-primary-light-3: mix($--color-white, $--color-primary, 30%) !default; /* 79bbff */
@@ -27,7 +30,7 @@ $--color-primary-light-9: mix($--color-white, $--color-primary, 90%) !default; /
 
 $--color-success: #67c23a !default;
 $--color-warning: #e6a23c !default;
-$--color-danger: #f56c6c !default;
+$--color-danger: $danger !default;
 $--color-info: #909399 !default;
 
 $--color-success-light: mix($--color-white, $--color-success, 80%) !default;
@@ -562,11 +565,11 @@ $--dropdown-menuItem-hover-color: $--link-color !default;
 
 /* Badge
 -------------------------- */
-$--badge-fill: $--color-danger !default;
-$--badge-radius: 10px !default;
-$--badge-font-size: 12px !default;
-$--badge-padding: 6px !default;
-$--badge-size: 18px !default;
+$--badge-fill: $--color-primary !default;
+$--badge-radius: 12px !default;
+$--badge-font-size: 15px !default;
+$--badge-padding: 8px !default;
+$--badge-size: 24px !default;
 
 /* Card
 --------------------------*/

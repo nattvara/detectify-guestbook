@@ -12,8 +12,8 @@ import Element from 'element-ui'
 import locale from 'element-ui/lib/locale/lang/en'
 
 Vue.use(Element, { locale })
-Vue.component('example', require('./components/Example.vue').default);
-Vue.component('example2', require('./components/Example2.vue').default);
+Vue.component('page', require('./components/Page/Main.vue').default);
+Vue.component('messages', require('./components/Messages/Main.vue').default);
 
 new Vue({
    el: '#app'
