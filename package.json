@@ -5,7 +5,7 @@
   "main": "resources/js/app.js",
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack",
-    "build-watch": "npm run build -- --watch"
+    "dev": "cross-env NODE_ENV=development webpack --watch"
   },
   "repository": {
     "type": "git",
