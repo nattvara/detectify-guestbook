@@ -12,6 +12,7 @@ namespace Guestbook\Http\Controllers;
 
 use Guestbook\Http\Request;
 use Guestbook\Http\Responses\HtmlResponse;
+use Guestbook\Http\Responses\JsonResponse;
 use Guestbook\Http\Responses\PlainTextResponse;
 use Guestbook\Http\Responses\RedirectResponse;
 use Guestbook\Http\Responses\Response;
@@ -36,9 +37,9 @@ class LoginController extends Controller {
      * Login in a user
      *
      * @param  Request $request
-     * @return RedirectResponse|HtmlResponse
+     * @return JsonResponse
      */
-    public function login(Request $request): Response {
+    public function login(Request $request): JsonResponse {
 
         $this->guest($request);
         $this->validateCsrf($request);
@@ -48,12 +49,11 @@ class LoginController extends Controller {
         $this->addValidationRule($request, 'password', 'required');
 
         if (!$this->validateRequest($request)) {
-            return (new HtmlResponse('login.html', [
-                'email' => $request->input('email') ? $request->input('email') : ''
-            ]))->withCsrfToken($request)
-            ->withHtmlVariables([
-                'errors' => $this->formatErrorsAsHtml($this->errors)
-            ]);
+            return (new JsonResponse([
+                'status_code'   => 400,
+                'message'       => '',
+                'errors'        => $this->errors
+            ]))->withStatusCode(400);
         }
 
         $credentials = true;
@@ -66,19 +66,20 @@ class LoginController extends Controller {
         }
 
         if (!$credentials) {
-            return (new HtmlResponse('login.html', [
-                'email' => $request->input('email') ? $request->input('email') : ''
-            ]))->withCsrfToken($request)
-            ->withHtmlVariables([
-                'errors' => $this->formatErrorsAsHtml([
-                    ['human_friendly' => 'Wrong email and/or password']
-                ])
-            ]);
+            return (new JsonResponse([
+                'status_code'   => 200,
+                'message'       => 'Invalid user credentials. Please try again.',
+                'login'         => false
+            ]))->withStatusCode(200);
         }
 
         $user->signIn($request);
 
-        return new RedirectResponse('/me');
+        return (new JsonResponse([
+            'status_code'   => 200,
+            'message'       => '',
+            'login'         => true
+        ]))->withStatusCode(200);
     }
 
     /**

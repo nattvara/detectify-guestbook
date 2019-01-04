@@ -52,7 +52,7 @@ abstract class Response {
      * @return self
      */
     public function withStatusCode(int $code): self {
-        http_response_code(404);
+        http_response_code($code);
         return $this;
     }
 

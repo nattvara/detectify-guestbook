@@ -78,7 +78,16 @@ class Request {
         }
         $this->setMethod($supportedMethods[$_SERVER['REQUEST_METHOD']]);
         $this->setPath($_SERVER['REQUEST_URI']);
+
         $this->setInput($_POST);
+        if (strpos($this->headers('content-type'), 'application/json') !== false) {
+            $json = file_get_contents('php://input');
+            $data = json_decode($json, true);
+            if (json_last_error() === JSON_ERROR_NONE) {
+                $this->setInput($data);
+            }
+        }
+
         $this->readUserFromSessionIfItExists();
         if (!$this->hasAuthenticatedUser) {
             $this->readTokenFromCookiesIfExistsAndSignUserIn();
@@ -156,6 +165,27 @@ class Request {
             return null;
         }
         return $this->data[$key];
+    }
+
+    /**
+     * Get header(s)
+     *
+     * @param  null|string $name fetch a specific header, returns null if it don't exist
+     * @return array|string|null
+     */
+    public function headers(?string $name = null) {
+        $headers = getallheaders();
+        foreach ($headers as $key => $value) {
+            unset($headers[$key]);
+            $headers[strtolower($key)] = $value;
+        }
+        if (!$name) {
+            return $headers;
+        }
+        if (in_array($name, array_keys($headers))) {
+            return $headers[$name];
+        }
+        return null;
     }
 
     /**
@@ -302,6 +332,9 @@ class Request {
      */
     public function containsValidCsrfToken(): bool {
         if ($this->input('csrf_token') === $this->getCsrfToken()) {
+            return true;
+        }
+        if ($this->headers('x-csrf-token') === $this->getCsrfToken()) {
             return true;
         }
         return false;
