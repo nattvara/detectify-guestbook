@@ -31,6 +31,7 @@
             author="Ipsam"></message>
     </div>
 </template>
+
 <script>
     import Message from './Message'
     export default {

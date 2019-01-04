@@ -30,6 +30,7 @@
         <el-footer></el-footer>
     </el-container>
 </template>
+
 <script>
     import PageHeader from './Header'
     export default {

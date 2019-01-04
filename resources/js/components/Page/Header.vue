@@ -50,6 +50,7 @@
         </el-row>
     </div>
 </template>
+
 <script>
     import LoginRegister from './../Forms/LoginRegisterContainer'
     export default {
