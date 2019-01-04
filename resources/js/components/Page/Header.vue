@@ -15,6 +15,16 @@
         color: $font-color;
     }
 
+    .below_title {
+        min-height: 150px;
+        margin-bottom: -100px;
+    }
+
+    .name {
+        float: right;
+        pointer-events: none;
+    }
+
 </style>
 
 <template>
@@ -22,29 +32,26 @@
         <el-row>
             <h1>The Guestbook Challenge</h1>
         </el-row>
-        <el-row type="flex" justify="center">
 
-            <div v-if="!authenticated">
-                <el-col :span="4" style="border-right: 2px solid black;">
-                    <el-button type="text" style="float: right;" @click="goTo('/login');">Login</el-button>
-                </el-col>
-                <el-col :span="4">
-                    <el-button type="text" @click="goTo('/register');">Register</el-button>
-                </el-col>
-            </div>
+        <el-row class="below_title">
 
-            <div v-if="authenticated">
-                <el-col :span="12" style="border-right: 2px solid black;">
-                    <el-button type="text" style="float: right;">{{ name }}</el-button>
-                </el-col>
-                <el-col :span="12">
-                    <el-button type="text" @click="logout();">Logout</el-button>
-                </el-col>
-            </div>
+            <login-register v-if="!authenticated && showLoginRegister"></login-register>
+
+            <el-row v-if="authenticated" type="flex" justify="center">
+                <div>
+                    <el-col :span="12" style="border-right: 2px solid black;">
+                        <el-button type="text" class="name">{{ name }}</el-button>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-button type="text" @click="logout();">Logout</el-button>
+                    </el-col>
+                </div>
+            </el-row>
         </el-row>
     </div>
 </template>
 <script>
+    import LoginRegister from './../Forms/LoginRegisterContainer'
     export default {
 
         /**
@@ -57,6 +64,10 @@
                 type: Boolean,
                 default: false
             },
+            showLoginRegister: {
+                type: Boolean,
+                default: true
+            },
             name: {
                 type: String,
                 default: ''
@@ -65,6 +76,15 @@
                 type: String,
                 default: ''
             },
+        },
+
+        /**
+         * Components
+         *
+         * @type {Object}
+         */
+        components: {
+            LoginRegister
         },
 
         /**

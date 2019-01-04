@@ -24,3 +24,7 @@ body {
 .el-badge__content {
     border: none !important;
 }
+
+.login.el-form-item.is-success .el-input__inner {
+    border-color: $font-color !important;
+}

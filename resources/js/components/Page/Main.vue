@@ -5,10 +5,12 @@
         max-width: 1000px;
         margin: auto;
         width: 100%;
+        z-index: 2;
     }
 
     .el-header {
         height: 100% !important;
+        z-index: 1;
     }
 
 </style>
@@ -17,6 +19,7 @@
     <el-container>
         <el-header>
             <page-header
+                :show-login-register="showLoginRegister"
                 :authenticated="authenticated"
                 :name="name"
                 :email="email"></page-header>
@@ -40,6 +43,10 @@
             authenticated: {
                 type: Boolean,
                 default: false
+            },
+            showLoginRegister: {
+                type: Boolean,
+                default: true
             },
             name: {
                 type: String,
