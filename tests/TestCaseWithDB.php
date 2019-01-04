@@ -136,4 +136,24 @@ class TestCaseWithDB extends TestCase {
 
     }
 
+    /**
+     * Assert database has a given number of messages
+     *
+     * @param  int   $count
+     * @return void
+     */
+    protected function assertMessageCount(int $count) {
+
+        $stmt = $this->db->prepare('SELECT * FROM `messages`;');
+        $stmt->execute();
+        $messages = $stmt->fetchAll();
+
+        $this->assertThat(
+            $messages,
+            new Count($count),
+            sprintf('Failed asserting message count was %d', $count)
+        );
+
+    }
+
 }

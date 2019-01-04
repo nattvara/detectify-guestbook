@@ -47,12 +47,15 @@ CREATE TABLE `messages` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `public_id` varchar(32) NOT NULL DEFAULT '',
   `author_id` int(11) unsigned NOT NULL,
+  `parent_id` int(11) unsigned DEFAULT NULL,
   `text` text NOT NULL,
   `created_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `public_id_unique` (`public_id`),
   KEY `author_id_to_users_table` (`author_id`),
-  CONSTRAINT `author_id_to_users_table` FOREIGN KEY (`author_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+  KEY `parent_id_to_message_table` (`parent_id`),
+  CONSTRAINT `author_id_to_users_table` FOREIGN KEY (`author_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `parent_id_to_message_table` FOREIGN KEY (`parent_id`) REFERENCES `messages` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -84,4 +87,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-01-04 17:46:46
+-- Dump completed on 2019-01-04 19:33:43
