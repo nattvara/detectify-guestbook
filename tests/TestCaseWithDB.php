@@ -116,4 +116,24 @@ class TestCaseWithDB extends TestCase {
 
     }
 
+    /**
+     * Assert database has a message with given public id
+     *
+     * @param  string $id public_id
+     * @return void
+     */
+    protected function assertDatabaseHasMessageWithPublicId(string $id) {
+
+        $stmt = $this->db->prepare('SELECT * FROM `messages` WHERE `public_id` = :public_id');
+        $stmt->execute(['public_id' => $id]);
+        $messages = $stmt->fetchAll();
+
+        $this->assertThat(
+            $messages,
+            new Count(1),
+            sprintf('Failed asserting message with public_id %s exists', $id)
+        );
+
+    }
+
 }
