@@ -24,6 +24,7 @@ import locale from 'element-ui/lib/locale/lang/en'
 
 Vue.use(Element, { locale })
 Vue.component('page', require('./components/Page/Main.vue').default);
+Vue.component('register-form', require('./components/Forms/Register.vue').default);
 Vue.component('messages', require('./components/Messages/Main.vue').default);
 
 Vue.mixin({
