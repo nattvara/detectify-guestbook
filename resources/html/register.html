@@ -3,33 +3,18 @@
 <head>
     <title>Guestbook</title>
     <meta charset="utf-8">
-    <link rel="stylesheet" type="text/css" href="/app.css" defer async>
+    <link rel="stylesheet" type="text/css" href="/main.css" defer async>
+    <link href="https://fonts.googleapis.com/css?family=Philosopher:400,400i,700" rel="stylesheet">
+    <meta name="csrf_token" content="{{csrf_token}}">
 </head>
 <body>
 
-    <img src="/logo.png">
-
-    <div>
-        {{errors}}
+    <div id="app">
+        <page :show-login-register="false">
+            <register-form></register-form>
+        </page>
     </div>
 
-    <form method="POST" action="/register">
-        <label for="email">Email</label>
-        <input type="email" name="email" value="{{email}}">
-
-        <label for="name">Full Name</label>
-        <input type="text" name="name" value="{{name}}">
-
-        <label for="password">Password</label>
-        <input type="password" name="password">
-
-        <label for="password_repeat">Repeat password</label>
-        <input type="password" name="password_repeat">
-
-        <button type="submit">Register</button>
-
-        {{csrf}}
-    </form>
-
+    <script type="text/javascript" src="/main.js"></script>
 </body>
 </html>

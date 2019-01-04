@@ -3,17 +3,24 @@
 <head>
     <title>Guestbook</title>
     <meta charset="utf-8">
-    <link rel="stylesheet" type="text/css" href="/app.css" defer async>
+    <link rel="stylesheet" type="text/css" href="/main.css" defer async>
+    <link href="https://fonts.googleapis.com/css?family=Philosopher:400,400i,700" rel="stylesheet">
+    <meta name="csrf_token" content="{{csrf_token}}">
 </head>
 <body>
 
-    <img src="/logo.png">
+    <div id="app">
+        <page
+            :authenticated="{{authenticated}}"
+            name="{{name}}"
+            email="{{email}}">
+            <messages></messages>
+        </page>
+    </div>
 
-    <h1>Welcome</h1>
-
-    <a href="/login">Login</a>
-    <a href="/register">Register</a>
-
-    <script type="text/javascript" src="/app.js"></script>
+    <form id="logout-form" action="/logout" method="POST" style="display: none;">
+        {{csrf}}
+    </form>
+    <script type="text/javascript" src="/main.js"></script>
 </body>
 </html>

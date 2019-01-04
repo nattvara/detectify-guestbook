@@ -7,4 +7,68 @@
  * file that was distributed with this source code.
  */
 
-console.log('hello')
+require('@babel/polyfill');
+
+// Configure axios
+window.axios = require('axios');
+window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+let csrf = document.head.querySelector('meta[name="csrf_token"]');
+if (csrf) {
+    window.axios.defaults.headers.common['X-CSRF-TOKEN'] = csrf.content;
+}
+
+
+import Vue from 'vue';
+import Element from 'element-ui'
+import locale from 'element-ui/lib/locale/lang/en'
+
+Vue.use(Element, { locale })
+Vue.component('page', require('./components/Page/Main.vue').default);
+Vue.component('register-form', require('./components/Forms/Register.vue').default);
+Vue.component('messages', require('./components/Messages/Main.vue').default);
+
+Vue.mixin({
+    methods: {
+
+        /**
+         * Goto path
+         *
+         * @param  {String} path
+         * @return {void}
+         */
+        goTo(path) {
+            window.location.href = path;
+        },
+
+        /**
+         * Pause execution (ish) for x milliseconds
+         *
+         * @param  {int} milliseconds
+         * @return {Promse}
+         */
+        sleep(milliseconds) {
+            return new Promise(resolve => setTimeout(resolve, milliseconds));
+        },
+
+        /**
+         * Add an alert method used across components to display errors
+         *
+         * @param  {string} message
+         * @return {void}
+         */
+        alertError(message, type = 'error', duration = 3000, showClose = false) {
+            this.$message({
+                showClose: true,
+                message: message,
+                type: type,
+                duration: duration,
+                showClose: showClose
+            });
+        },
+    }
+});
+
+
+new Vue({
+    el: '#app'
+});

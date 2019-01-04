@@ -46,6 +46,17 @@ abstract class Response {
     }
 
     /**
+     * Set status code of response
+     *
+     * @param  int    $code
+     * @return self
+     */
+    public function withStatusCode(int $code): self {
+        http_response_code($code);
+        return $this;
+    }
+
+    /**
      * Write response
      *
      * @return void

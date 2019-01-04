@@ -12,9 +12,8 @@ namespace Guestbook\Http\Controllers;
 
 use Guestbook\Http\Request;
 use Guestbook\Http\Responses\HtmlResponse;
-use Guestbook\Http\Responses\PlainTextResponse;
 
-class WelcomeController extends Controller {
+class GuestbookController extends Controller {
 
     /**
      * The index page
@@ -23,21 +22,10 @@ class WelcomeController extends Controller {
      * @return HtmlResponse
      */
     public function index(Request $request): HtmlResponse {
-        $this->guest($request);
-        return new HtmlResponse('index.html');
-    }
-
-    /**
-     * The profile (me) page
-     *
-     * @param  Request $request
-     * @return HtmlResponse
-     */
-    public function me(Request $request): HtmlResponse {
-        $this->guard($request);
-        return (new HtmlResponse('me.html', [
-            'name' => $request->user()->getName()
+        return (new HtmlResponse('index.html', [
+            'authenticated' => $request->hasAuthenticatedUser() ? 'true' : 'false',
+            'name'          => $request->hasAuthenticatedUser() ? $request->user()->getName() : false,
+            'email'         => $request->hasAuthenticatedUser() ? $request->user()->getEmail() : false,
         ]))->withCsrfToken($request);
     }
-
 }

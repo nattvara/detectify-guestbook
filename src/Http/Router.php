@@ -83,11 +83,11 @@ class Router {
             $route = $this->retrieveRoute($request->getMethod(), $request->getPath());
             return $route->execute($request);
         } catch (RouteNotFoundException $e) {
-            return new HtmlResponse('404.html');
+            return (new HtmlResponse('404.html'))->withStatusCode(404);
         } catch (UnauthenticatedException $e) {
             return new RedirectResponse('/login');
         } catch (GuestException $e) {
-            return new RedirectResponse('/me');
+            return new RedirectResponse('/');
         } catch (InvalidCsrfException $e) {
             return new HtmlResponse('error.html', ['reason' => 'Invalid CSRF Token']);
         }

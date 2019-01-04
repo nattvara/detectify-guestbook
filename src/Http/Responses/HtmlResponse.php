@@ -40,6 +40,7 @@ class HtmlResponse extends Response {
             sprintf('<input type="hidden" name="csrf_token" value="%s">', $request->getCsrfToken()),
             $body
         );
+        $body = str_replace('{{csrf_token}}', $request->getCsrfToken(), $body);
         $this->setResponseBody($body);
         return $this;
     }
