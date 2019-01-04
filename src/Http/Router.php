@@ -87,7 +87,7 @@ class Router {
         } catch (UnauthenticatedException $e) {
             return new RedirectResponse('/login');
         } catch (GuestException $e) {
-            return new RedirectResponse('/me');
+            return new RedirectResponse('/');
         } catch (InvalidCsrfException $e) {
             return new HtmlResponse('error.html', ['reason' => 'Invalid CSRF Token']);
         }

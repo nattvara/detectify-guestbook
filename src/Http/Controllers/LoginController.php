@@ -94,12 +94,28 @@ class LoginController extends Controller {
     }
 
     /**
+     * Log the user out
+     *
+     * @param  Request $request
+     * @return RedirectResponse
+     */
+    public function logout(Request $request): RedirectResponse {
+
+        $this->guard($request);
+        $this->validateCsrf($request);
+
+        $request->user()->signOut($request);
+
+        return new RedirectResponse('/');
+    }
+
+    /**
      * Register a user
      *
      * @param  Request $request
-     * @return HtmlResponse
+     * @return JsonResponse
      */
-    public function register(Request $request): HtmlResponse {
+    public function register(Request $request): JsonResponse {
 
         $this->guest($request);
         $this->validateCsrf($request);
@@ -117,13 +133,11 @@ class LoginController extends Controller {
         $this->addValidationRule($request, 'password_repeat', 'match', ['key' => 'password', 'key_pretty' => 'Password'], 'repeat password');
 
         if (!$this->validateRequest($request)) {
-            return (new HtmlResponse('register.html', [
-                'email' => $request->input('email') ? $request->input('email') : '',
-                'name'  => $request->input('name') ? $request->input('name') : '',
-            ]))->withCsrfToken($request)
-            ->withHtmlVariables([
-                'errors' => $this->formatErrorsAsHtml($this->errors)
-            ]);
+            return (new JsonResponse([
+                'status_code'   => 400,
+                'message'       => 'Failed to register user, form did not pass validation',
+                'errors'        => $this->errors
+            ]))->withStatusCode(400);
         }
 
         // Store user
@@ -135,22 +149,128 @@ class LoginController extends Controller {
 
         $user->signIn($request);
 
-        return new HtmlResponse('registered.html');
+        return (new JsonResponse([
+            'status_code'   => 200,
+            'message'       => 'registered user',
+        ]))->withStatusCode(200);
     }
 
     /**
-     * Log the user out
+     * Validate email field of register form
      *
      * @param  Request $request
-     * @return RedirectResponse
+     * @return JsonResponse
      */
-    public function logout(Request $request): RedirectResponse {
+    public function validateEmail(Request $request): JsonResponse {
 
-        $this->guard($request);
+        $this->guest($request);
         $this->validateCsrf($request);
 
-        $request->user()->signOut($request);
+        $this->addValidationRule($request, 'email', 'required');
+        $this->addValidationRule($request, 'email', 'email');
+        $this->addValidationRule($request, 'email', 'unique', ['table' => 'users', 'column' => 'email']);
+        $this->addValidationRule($request, 'email', 'length', ['min' => 5, 'max' => 128]);
 
-        return new RedirectResponse('/');
+        if (!$this->validateRequest($request)) {
+            return (new JsonResponse([
+                'status_code'   => 400,
+                'message'       => 'failed validation',
+                'errors'        => $this->errors
+            ]))->withStatusCode(400);
+        }
+
+        return (new JsonResponse([
+            'status_code'   => 200,
+            'message'       => 'passed validation',
+            'errors'        => false
+        ]))->withStatusCode(200);
+    }
+
+    /**
+     * Validate name field of register form
+     *
+     * @param  Request $request
+     * @return JsonResponse
+     */
+    public function validateName(Request $request): JsonResponse {
+
+        $this->guest($request);
+        $this->validateCsrf($request);
+
+        $this->addValidationRule($request, 'name', 'required');
+        $this->addValidationRule($request, 'name', 'length', ['min' => 2, 'max' => 128]);
+
+        if (!$this->validateRequest($request)) {
+            return (new JsonResponse([
+                'status_code'   => 400,
+                'message'       => 'failed validation',
+                'errors'        => $this->errors
+            ]))->withStatusCode(400);
+        }
+
+        return (new JsonResponse([
+            'status_code'   => 200,
+            'message'       => 'passed validation',
+            'errors'        => false
+        ]))->withStatusCode(200);
+    }
+
+    /**
+     * Validate password field of register form
+     *
+     * @param  Request $request
+     * @return JsonResponse
+     */
+    public function validatePassword(Request $request): JsonResponse {
+
+        $this->guest($request);
+        $this->validateCsrf($request);
+
+        $this->addValidationRule($request, 'password', 'required');
+        $this->addValidationRule($request, 'password', 'length', ['min' => 2]);
+        $this->addValidationRule($request, 'password', 'pwnedpasswords.com');
+
+        if (!$this->validateRequest($request)) {
+            return (new JsonResponse([
+                'status_code'   => 400,
+                'message'       => 'failed validation',
+                'errors'        => $this->errors
+            ]))->withStatusCode(400);
+        }
+
+        return (new JsonResponse([
+            'status_code'   => 200,
+            'message'       => 'passed validation',
+            'errors'        => false
+        ]))->withStatusCode(200);
+    }
+
+    /**
+     * Validate password_repeat field of register form
+     *
+     * @param  Request $request
+     * @return JsonResponse
+     */
+    public function validatePasswordRepeat(Request $request): JsonResponse {
+
+        $this->guest($request);
+        $this->validateCsrf($request);
+
+        $this->addValidationRule($request, 'password_repeat', 'required', [], 'repeat password');
+        $this->addValidationRule($request, 'password_repeat', 'match', ['key' => 'password', 'key_pretty' => 'Password'], 'repeat password');
+
+        if (!$this->validateRequest($request)) {
+            return (new JsonResponse([
+                'status_code'   => 400,
+                'message'       => 'failed validation',
+                'errors'        => $this->errors
+            ]))->withStatusCode(400);
+        }
+
+        return (new JsonResponse([
+            'status_code'   => 200,
+            'message'       => 'passed validation',
+            'errors'        => false
+        ]))->withStatusCode(200);
     }
 }

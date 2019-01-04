@@ -32,9 +32,13 @@ $router = new Router;
 $router->registerRoutes([
     new GET('/login', \Guestbook\Http\Controllers\LoginController::class, 'viewLoginForm'),
     new POST('/login', \Guestbook\Http\Controllers\LoginController::class, 'login'),
+    new POST('/logout', \Guestbook\Http\Controllers\LoginController::class, 'logout'),
     new GET('/register', \Guestbook\Http\Controllers\LoginController::class, 'viewRegisterForm'),
     new POST('/register', \Guestbook\Http\Controllers\LoginController::class, 'register'),
-    new POST('/logout', \Guestbook\Http\Controllers\LoginController::class, 'logout'),
+    new POST('/register/validate/email', \Guestbook\Http\Controllers\LoginController::class, 'validateEmail'),
+    new POST('/register/validate/name', \Guestbook\Http\Controllers\LoginController::class, 'validateName'),
+    new POST('/register/validate/password', \Guestbook\Http\Controllers\LoginController::class, 'validatePassword'),
+    new POST('/register/validate/password_repeat', \Guestbook\Http\Controllers\LoginController::class, 'validatePasswordRepeat'),
 
     new GET('/me', \Guestbook\Http\Controllers\UserController::class, 'me'),
 
