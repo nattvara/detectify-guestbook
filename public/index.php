@@ -43,6 +43,7 @@ $router->registerRoutes([
     new GET('/me', \Guestbook\Http\Controllers\UserController::class, 'me'),
 
     new GET('/', \Guestbook\Http\Controllers\GuestbookController::class, 'index'),
+    new GET('/messages', \Guestbook\Http\Controllers\MessagesController::class, 'all'),
 
     new GET('/main.js', \Guestbook\Http\Controllers\AssetController::class, 'js'),
     new GET('/main.css', \Guestbook\Http\Controllers\AssetController::class, 'css'),

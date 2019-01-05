@@ -14,6 +14,7 @@ use Guestbook\Helpers\Database;
 use Guestbook\Models\Exceptions\MessageNotFoundException;
 use Guestbook\Models\Exceptions\ReplyDepthException;
 use \PDO;
+use \DateTime;
 
 class Message {
 
@@ -53,6 +54,11 @@ class Message {
     private $parentMessageId;
 
     /**
+     * @var DateTime
+     */
+    private $createdAt;
+
+    /**
      * @var PDO
      */
     private $db;
@@ -81,6 +87,23 @@ class Message {
         }
         $message->store();
         return $message;
+    }
+
+    /**
+     * Fetch all messages
+     *
+     * @return array
+     */
+    public static function all(): array {
+        $db         = Database::getPDOConnection();
+        $stmt       = $db->prepare('SELECT * FROM `messages`;');
+        $stmt->execute();
+        $rows       = $stmt->fetchAll();
+        $messages   = [];
+        foreach ($rows as $row) {
+            $messages[] = Message::fromDBRecord($row, $db);
+        }
+        return $messages;
     }
 
     /**
@@ -135,6 +158,7 @@ class Message {
         $message->setAuthorId($record['author_id']);
         $message->setPublicId($record['public_id']);
         $message->setDB($db);
+        $message->setCreatedAt(DateTime::createFromFormat('Y-m-d H:i:s', $record['created_at']));
         if ($record['parent_id']) {
             $message->setParentMessageId($record['parent_id']);
         }
@@ -158,6 +182,25 @@ class Message {
      */
     public function getText(): string {
         return $this->text;
+    }
+
+    /**
+     * Set created at
+     *
+     * @param DateTime $createdAt
+     * @return void
+     */
+    public function setCreatedAt(DateTime $createdAt) {
+        $this->createdAt = $createdAt;
+    }
+
+    /**
+     * Get created at
+     *
+     * @return DateTime
+     */
+    public function getCreatedAt(): DateTime {
+        return $this->createdAt;
     }
 
     /**
@@ -327,6 +370,22 @@ class Message {
         $this->getAuthor();
         $this->getParentMessage();
         return $this;
+    }
+
+    /**
+     * Format message data for frontend clients to consume
+     *
+     * @return array
+     */
+    public function formatForClient(): array {
+        return [
+            'id'            => $this->getPublicId(),
+            'author'        => $this->getAuthor()->getName(),
+            'author_id'     => $this->getAuthor()->getPublicId(),
+            'parent_id'     => $this->hasParentMessage() ? $this->getParentMessage()->getPublicId() : null,
+            'text'          => $this->getText(),
+            'created_at'    => $this->getCreatedAt()->format(DateTime::ISO8601),
+        ];
     }
 
     /**
