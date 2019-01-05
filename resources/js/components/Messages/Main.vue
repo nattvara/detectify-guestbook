@@ -5,30 +5,18 @@
 <template>
     <div>
         <message
-            text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam"
-            author="Lorem ipsum"></message>
-
-        <message
-            text="Sed ut perspiciatis unde omnis iste natus error sit voluptatem"
-            author="Nemo enim ipsam">
-                <div>
-                    <message
-                        text="Sed ut perspiciatis unde omnis iste natus error sit voluptatem"
-                        author="Nemo enim ipsam"></message>
-
-                    <message
-                        text="Sed quia non"
-                        author="Ipsam"></message>
-                </div>
-            </message>
-
-        <message
-            text="Sed quia non"
-            author="Ipsam"></message>
-
-        <message
-            text="Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur"
-            author="Ipsam"></message>
+            v-for="message in messages"
+            v-if="!message.parent_id"
+            :key="message.id"
+            :id="message.id"
+            :parent-id="message.id"
+            :author="message.author"
+            :author-id="message.author_id"
+            :text="message.text"
+            :created-at="message.created_at"
+            :responses="responses"
+            :messages="messages"
+            ></message>
     </div>
 </template>
 
@@ -43,6 +31,69 @@
          */
         components: {
             Message
+        },
+
+        /**
+         * Components data
+         *
+         * @return {Object}
+         */
+        data() {
+            return {
+                messages: []
+            };
+        },
+
+        /**
+         * Component was mounted
+         *
+         * @return {void}
+         */
+        async mounted() {
+            while (true) {
+                await this.fetch();
+                await this.sleep(5000);
+            }
+        },
+
+        /**
+         * Components methods
+         *
+         * @type {Object}
+         */
+        methods: {
+
+            /**
+             * Fetch messages
+             *
+             * @return {void}
+             */
+            async fetch() {
+                try {
+                    let response = await axios.get('/messages');
+                    this.messages = response.data.messages;
+                } catch (e) {
+                    this.alertError('Failed to load messages');
+                }
+            },
+
+            /**
+             * Get responses from array of messages
+             *
+             * @param  {Array}  messages Array to select from
+             * @param  {String} parentId Parent messages should be in response to
+             * @return {Array}
+             */
+            responses(messages, parentId) {
+                var responses = [];
+                for (var i = messages.length - 1; i >= 0; i--) {
+                    if (messages[i].parent_id === parentId) {
+                        responses.push(messages[i]);
+                    }
+                }
+                return responses;
+            }
+
         }
 
     }

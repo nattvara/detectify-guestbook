@@ -48,7 +48,21 @@
                 </el-badge>
             </el-row>
 
-            <slot></slot>
+            <div>
+                <message
+                    v-for="message in responses(messages, parentId)"
+                    v-if="message.parent_id === parentId"
+                    :key="message.id"
+                    :id="message.id"
+                    :parent-id="message.id"
+                    :author="message.author"
+                    :author-id="message.author_id"
+                    :text="message.text"
+                    :created-at="message.created_at"
+                    :responses="responses"
+                    :messages="messages"
+                    ></message>
+            </div>
         </el-card>
     </div>
 </template>
@@ -56,14 +70,22 @@
 <script>
     export default {
 
+        name: 'message',
+
         /**
          * Components properties
          *
          * @type {Object}
          */
         props: {
+            id: String,
             text: String,
             author: String,
+            authorId: String,
+            parentId: String,
+            createdAt: String,
+            messages: Array,
+            responses: Function
         }
 
     }
