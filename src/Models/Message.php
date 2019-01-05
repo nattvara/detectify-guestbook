@@ -352,10 +352,11 @@ class Message {
         ]);
 
         // Fetch the id for the message just created
-        $stmt = $this->db->prepare('SELECT `id` FROM `messages` WHERE `public_id` = :id;');
+        $stmt = $this->db->prepare('SELECT `id`, `created_at` FROM `messages` WHERE `public_id` = :id;');
         $stmt->execute(['id' => $this->publicId]);
         $row = $stmt->fetch();
         $this->setId($row['id']);
+        $this->setCreatedAt(DateTime::createFromFormat('Y-m-d H:i:s', $row['created_at']));
     }
 
     /**
