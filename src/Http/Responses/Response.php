@@ -71,7 +71,7 @@ abstract class Response {
             header($header);
         }
 
-        header(sprintf('Content-Type: ', $this->contentType));
+        header(sprintf('Content-Type: %s', $this->contentType));
         $fp = fopen('php://output', 'w');
         fwrite($fp, $this->getResponseBody());
         fclose($fp);
