@@ -93,4 +93,36 @@ class MessagesController extends Controller {
             'created'       => $message->formatForClient()
         ]))->withStatusCode(201);
     }
+
+    /**
+     * Reply to a message
+     *
+     * @param  Request $request
+     * @return JsonResponse
+     */
+    public function reply(Request $request): JsonResponse {
+
+        $this->guard($request);
+        $this->validateCsrf($request);
+
+        $this->addValidationRule($request, 'text', 'required');
+        $this->addValidationRule($request, 'text', 'length', ['min' => 1, 'max' => 1000]);
+
+        if (!$this->validateRequest($request)) {
+            return (new JsonResponse([
+                'status_code'   => 400,
+                'message'       => 'failed validation',
+                'errors'        => $this->errors
+            ]))->withStatusCode(400);
+        }
+
+        $parent     = Message::findByPublicId($request->urlVariable('id'));
+        $message    = Message::create($request->input('text'), $request->user(), $parent);
+
+        return (new JsonResponse([
+            'status_code'   => 201,
+            'message'       => '',
+            'created'       => $message->formatForClient()
+        ]))->withStatusCode(201);
+    }
 }
