@@ -19,6 +19,7 @@ use Guestbook\Http\Responses\JsonResponse;
 use Guestbook\Http\Responses\RedirectResponse;
 use Guestbook\Http\Responses\Response;
 use Guestbook\Http\Routes\Route;
+use \Exception;
 
 class Router {
 
@@ -120,6 +121,15 @@ class Router {
                 ]))->withStatusCode(500);
             }
             return (new HtmlResponse('error.html', ['reason' => 'Invalid CSRF Token']))->withStatusCode(500);
+        } catch (Exception $e) {
+            if ($request->isJson()) {
+                return (new JsonResponse([
+                    'status_code'   => 500,
+                    'message'       => 'Something went wrong',
+                    'errors'        => []
+                ]))->withStatusCode(500);
+            }
+            return (new HtmlResponse('error.html', ['reason' => 'Something went wrong']))->withStatusCode(500);
         }
     }
 
