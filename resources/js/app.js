@@ -41,6 +41,15 @@ Vue.mixin({
         },
 
         /**
+         * Check if use logged in
+         *
+         * @return {Boolean}
+         */
+        loggedIn() {
+            return window.authenticated;
+        },
+
+        /**
          * Pause execution (ish) for x milliseconds
          *
          * @param  {int} milliseconds
