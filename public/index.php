@@ -30,7 +30,6 @@ ImageResponse::setResourceDirectory(__DIR__ . '/../resources/img');
 
 $router = new Router;
 $router->registerRoutes([
-    new GET('/login', \Guestbook\Http\Controllers\LoginController::class, 'viewLoginForm'),
     new POST('/login', \Guestbook\Http\Controllers\LoginController::class, 'login'),
     new POST('/logout', \Guestbook\Http\Controllers\LoginController::class, 'logout'),
     new GET('/register', \Guestbook\Http\Controllers\LoginController::class, 'viewRegisterForm'),

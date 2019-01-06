@@ -189,6 +189,18 @@ class Request {
     }
 
     /**
+     * Check if request content type is json
+     *
+     * @return boolean
+     */
+    public function isJson(): bool {
+        if (strpos($this->headers('content-type'), 'application/json') !== false) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Add session variables
      *
      * @param string $name

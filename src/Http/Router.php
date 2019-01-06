@@ -15,6 +15,7 @@ use Guestbook\Http\Exceptions\GuestException;
 use Guestbook\Http\Exceptions\RouteNotFoundException;
 use Guestbook\Http\Exceptions\UnauthenticatedException;
 use Guestbook\Http\Responses\HtmlResponse;
+use Guestbook\Http\Responses\JsonResponse;
 use Guestbook\Http\Responses\RedirectResponse;
 use Guestbook\Http\Responses\Response;
 use Guestbook\Http\Routes\Route;
@@ -83,13 +84,34 @@ class Router {
             $route = $this->retrieveRoute($request->getMethod(), $request->getPath());
             return $route->execute($request);
         } catch (RouteNotFoundException $e) {
+            if ($request->isJson()) {
+                return (new JsonResponse([
+                    'status_code'   => 404,
+                    'message'       => 'Resource not found',
+                    'errors'        => []
+                ]))->withStatusCode(404);
+            }
             return (new HtmlResponse('404.html'))->withStatusCode(404);
         } catch (UnauthenticatedException $e) {
-            return new RedirectResponse('/login');
+            if ($request->isJson()) {
+                return (new JsonResponse([
+                    'status_code'   => 403,
+                    'message'       => 'You need to login to view this resource',
+                    'errors'        => []
+                ]))->withStatusCode(403);
+            }
+            return (new HtmlResponse('error.html', ['reason' => 'You need to login to view this resource']))->withStatusCode(403);
         } catch (GuestException $e) {
             return new RedirectResponse('/');
         } catch (InvalidCsrfException $e) {
-            return new HtmlResponse('error.html', ['reason' => 'Invalid CSRF Token']);
+            if ($request->isJson()) {
+                return (new JsonResponse([
+                    'status_code'   => 500,
+                    'message'       => 'Invalid CSRF Token',
+                    'errors'        => []
+                ]))->withStatusCode(500);
+            }
+            return (new HtmlResponse('error.html', ['reason' => 'Invalid CSRF Token']))->withStatusCode(500);
         }
     }
 
