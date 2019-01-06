@@ -66,7 +66,12 @@ class Router {
             if (!($route instanceof $method)) {
                 continue;
             }
-            if ($route->getPath() === $path) {
+
+            if ($route->getPath() === $path && !$route->hasVariables()) {
+                return $route;
+            }
+
+            if ($route->getPath() === $route->synthesize($path) && $route->hasVariables()) {
                 return $route;
             }
         }
@@ -82,6 +87,9 @@ class Router {
     public function route(Request $request): Response {
         try {
             $route = $this->retrieveRoute($request->getMethod(), $request->getPath());
+            if ($route->hasVariables()) {
+                $request->setUrlVariables($route->parseUrlVariables($request));
+            }
             return $route->execute($request);
         } catch (RouteNotFoundException $e) {
             if ($request->isJson()) {

@@ -46,6 +46,13 @@ class Request {
     private $data = [];
 
     /**
+     * Url variables
+     *
+     * @var array
+     */
+    private $urlVariables = [];
+
+    /**
      * @var Validation
      */
     private $validation;
@@ -165,6 +172,29 @@ class Request {
             return null;
         }
         return $this->data[$key];
+    }
+
+    /**
+     * Set url variables
+     *
+     * @param array $urlVariables
+     * @return void
+     */
+    public function setUrlVariables(array $urlVariables) {
+        $this->urlVariables = $urlVariables;
+    }
+
+    /**
+     * Get the value of a url variable
+     *
+     * @param  string $name
+     * @return string
+     */
+    public function urlVariable(string $name): string {
+        if (!isset($this->urlVariables[$name])) {
+            return null;
+        }
+        return $this->urlVariables[$name];
     }
 
     /**

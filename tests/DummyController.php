@@ -47,4 +47,18 @@ class DummyController extends Controller {
         return new PlainTextResponse($number1 + $number2);
     }
 
+    /**
+     * Print var_1 and var_2
+     *
+     * @param  Request $request
+     * @return PlainTextResponse
+     */
+    public function printVarOneAndTwo(Request $request): PlainTextResponse {
+        return new PlainTextResponse(sprintf(
+            '%s %s',
+            $request->urlVariable('var_1'),
+            $request->urlVariable('var_2')
+        ));
+    }
+
 }
