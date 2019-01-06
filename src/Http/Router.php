@@ -86,6 +86,53 @@ class Router {
      * @return Response
      */
     public function route(Request $request): Response {
+
+        $errorHandlers = [
+            '404' => function() use ($request) {
+                if ($request->isJson()) {
+                    return (new JsonResponse([
+                        'status_code'   => 404,
+                        'message'       => 'Resource not found',
+                        'errors'        => []
+                    ]))->withStatusCode(404);
+                }
+                return (new HtmlResponse('404.html'))->withStatusCode(404);
+            },
+            'auth' => function() use ($request) {
+                if ($request->isJson()) {
+                    return (new JsonResponse([
+                        'status_code'   => 403,
+                        'message'       => 'You need to login to view this resource',
+                        'errors'        => []
+                    ]))->withStatusCode(403);
+                }
+                return (new HtmlResponse('error.html', ['reason' => 'You need to login to view this resource']))->withStatusCode(403);
+            },
+            'redirect' => function() use ($request) {
+                return new RedirectResponse('/');
+            },
+            'csrf' => function() use ($request) {
+                if ($request->isJson()) {
+                    return (new JsonResponse([
+                        'status_code'   => 500,
+                        'message'       => 'Invalid CSRF Token',
+                        'errors'        => []
+                    ]))->withStatusCode(500);
+                }
+                return (new HtmlResponse('error.html', ['reason' => 'Invalid CSRF Token']))->withStatusCode(500);
+            },
+            'general' => function() use ($request) {
+                if ($request->isJson()) {
+                    return (new JsonResponse([
+                        'status_code'   => 500,
+                        'message'       => 'Something went wrong',
+                        'errors'        => []
+                    ]))->withStatusCode(500);
+                }
+                return (new HtmlResponse('error.html', ['reason' => 'Something went wrong']))->withStatusCode(500);
+            }
+        ];
+
         try {
             $route = $this->retrieveRoute($request->getMethod(), $request->getPath());
             if ($route->hasVariables()) {
@@ -93,43 +140,15 @@ class Router {
             }
             return $route->execute($request);
         } catch (RouteNotFoundException $e) {
-            if ($request->isJson()) {
-                return (new JsonResponse([
-                    'status_code'   => 404,
-                    'message'       => 'Resource not found',
-                    'errors'        => []
-                ]))->withStatusCode(404);
-            }
-            return (new HtmlResponse('404.html'))->withStatusCode(404);
+            return $errorHandlers['404']();
         } catch (UnauthenticatedException $e) {
-            if ($request->isJson()) {
-                return (new JsonResponse([
-                    'status_code'   => 403,
-                    'message'       => 'You need to login to view this resource',
-                    'errors'        => []
-                ]))->withStatusCode(403);
-            }
-            return (new HtmlResponse('error.html', ['reason' => 'You need to login to view this resource']))->withStatusCode(403);
+            return $errorHandlers['auth']();
         } catch (GuestException $e) {
-            return new RedirectResponse('/');
+            return $errorHandlers['redirect']();
         } catch (InvalidCsrfException $e) {
-            if ($request->isJson()) {
-                return (new JsonResponse([
-                    'status_code'   => 500,
-                    'message'       => 'Invalid CSRF Token',
-                    'errors'        => []
-                ]))->withStatusCode(500);
-            }
-            return (new HtmlResponse('error.html', ['reason' => 'Invalid CSRF Token']))->withStatusCode(500);
+            return $errorHandlers['csrf']();
         } catch (Exception $e) {
-            if ($request->isJson()) {
-                return (new JsonResponse([
-                    'status_code'   => 500,
-                    'message'       => 'Something went wrong',
-                    'errors'        => []
-                ]))->withStatusCode(500);
-            }
-            return (new HtmlResponse('error.html', ['reason' => 'Something went wrong']))->withStatusCode(500);
+            return $errorHandlers['general']();
         }
     }
 
