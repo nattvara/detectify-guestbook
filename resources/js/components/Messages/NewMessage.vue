@@ -77,6 +77,7 @@
                             </el-form-item>
                             <el-form-item>
                                 <el-button class="submit" type="primary" plain @click="post();">Post</el-button>
+                                <el-button class="submit" type="default" plain @click="$emit('cancel');" v-if="showCancel">Cancel</el-button>
                             </el-form-item>
                         </el-form>
                     </el-row>
@@ -129,7 +130,16 @@
          *
          * @type {Object}
          */
-        props: {},
+        props: {
+            replyTo: {
+                type: String,
+                default: ''
+            },
+            showCancel: {
+                type: Boolean,
+                default: false
+            }
+        },
 
         /**
          * Components
@@ -195,7 +205,11 @@
             async post() {
                 this.messageForm.loading = true;
                 try {
-                    var response = await axios.post('/messages', this.messageForm.form);
+                    let url = '/messages';
+                    if (this.replyTo) {
+                        url += '/' + this.replyTo;
+                    }
+                    var response = await axios.post(url, this.messageForm.form);
                     this.messageForm.form.text = '';
                     this.$emit('reload-messages');
                 } catch (e) {

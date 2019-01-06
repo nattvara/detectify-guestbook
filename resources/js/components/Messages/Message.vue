@@ -15,15 +15,19 @@
         margin: 0px 0px 20px 0px;
     }
 
-    .votes {
+    .actions {
         margin: 0px 0px 5px 0px;
+
+        .action {
+            float: left;
+        }
+
+        *.el-button {
+            padding: 10px 10px 10px 0px;
+        }
 
         .el-badge {
             margin-right: 30px;
-
-            .vote {
-                padding: 10px 10px 10px 0px;
-            }
         }
     }
 
@@ -33,19 +37,27 @@
     <div>
         <el-card class="message" shadow="hover">
             <el-row>
-                <h4><em>{{ author }}</em> writes,</h4>
+                <h4>
+                    <em>{{ author }}</em>
+                    <span v-if="isRoot">writes,</span>
+                    <span v-if="!isRoot">responds,</span>
+                </h4>
             </el-row>
             <el-row>
                 <p>{{ text }}</p>
             </el-row>
 
-            <el-row class="votes">
-                <el-badge :value="12" class="item">
-                    <el-button type="text" class="vote">Upvote</el-button>
+            <el-row class="actions">
+                <el-badge :value="12" class="action">
+                    <el-button type="text">Upvote</el-button>
                 </el-badge>
-                <el-badge :value="12" class="item">
-                    <el-button type="text" class="vote">Downvote</el-button>
+                <el-badge :value="12" class="action">
+                    <el-button type="text">Downvote</el-button>
                 </el-badge>
+                <el-button type="text" class="action" @click="showReply();">
+                    Reply
+                    <font-awesome-icon icon="reply" />
+                </el-button>
             </el-row>
 
             <div>
@@ -54,6 +66,7 @@
                     v-if="message.parent_id === parentId"
                     :key="message.id"
                     :id="message.id"
+                    :is-root="false"
                     :parent-id="message.id"
                     :author="message.author"
                     :author-id="message.author_id"
@@ -61,16 +74,39 @@
                     :created-at="message.created_at"
                     :responses="responses"
                     :messages="messages"
+                    @reload-messages="$emit('reload-messages');"
                     ></message>
             </div>
+
+            <el-row v-show="replyForm.show" ref="reply">
+                <new-message
+                    :reply-to="this.id"
+                    :show-cancel="true"
+                    @cancel="replyForm.show = false;"></new-message>
+            </el-row>
         </el-card>
     </div>
 </template>
 
 <script>
+    import NewMessage from './NewMessage'
     export default {
 
+        /**
+         * Component's name
+         *
+         * @type {String}
+         */
         name: 'message',
+
+        /**
+         * Components.
+         *
+         * @type {Object}
+         */
+        components: {
+            NewMessage
+        },
 
         /**
          * Components properties
@@ -81,12 +117,47 @@
             id: String,
             text: String,
             author: String,
+            isRoot: Boolean,
             authorId: String,
             parentId: String,
             createdAt: String,
             messages: Array,
             responses: Function
-        }
+        },
 
+        /**
+         * Components data
+         *
+         * @return {Object}
+         */
+        data() {
+            return {
+                replyForm: {
+                    show: false,
+                }
+            };
+        },
+
+        /**
+         * Components methods
+         *
+         * @type {Object}
+         */
+        methods: {
+
+            /**
+             * Show reply form
+             *
+             * @return {void}
+             */
+            async showReply() {
+                this.replyForm.show = true;
+                await this.sleep(50);
+                this.$scrollTo(this.$refs.reply.$el, 300, {
+                    force: true,
+                    offset: -200
+                });
+            }
+        }
     }
 </script>

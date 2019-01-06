@@ -19,10 +19,27 @@ if (csrf) {
 
 
 import Vue from 'vue';
+
+// Element UI
 import Element from 'element-ui'
 import locale from 'element-ui/lib/locale/lang/en'
-
 Vue.use(Element, { locale })
+
+// Font Awesome
+import { library } from '@fortawesome/fontawesome-svg-core'
+import {
+    faReply
+} from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+library.add(faReply)
+Vue.component('font-awesome-icon', FontAwesomeIcon)
+
+// vue-scrollto
+import VueScrollTo from 'vue-scrollto'
+Vue.use(VueScrollTo)
+
+
+// nattvara/detectify-guestbook components
 Vue.component('page', require('./components/Page/Main.vue').default);
 Vue.component('register-form', require('./components/Forms/Register.vue').default);
 Vue.component('messages', require('./components/Messages/Main.vue').default);

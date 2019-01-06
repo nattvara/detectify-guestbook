@@ -9,6 +9,7 @@
             v-if="!message.parent_id"
             :key="message.id"
             :id="message.id"
+            :is-root="true"
             :parent-id="message.id"
             :author="message.author"
             :author-id="message.author_id"
@@ -16,6 +17,7 @@
             :created-at="message.created_at"
             :responses="responses"
             :messages="messages"
+            @reload-messages="fetch();"
             ></message>
 
         <new-message @reload-messages="fetch();"></new-message>
