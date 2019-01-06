@@ -17,11 +17,14 @@
             :responses="responses"
             :messages="messages"
             ></message>
+
+        <new-message @reload-messages="fetch();"></new-message>
     </div>
 </template>
 
 <script>
     import Message from './Message'
+    import NewMessage from './NewMessage'
     export default {
 
         /**
@@ -30,7 +33,8 @@
          * @type {Object}
          */
         components: {
-            Message
+            Message,
+            NewMessage
         },
 
         /**
