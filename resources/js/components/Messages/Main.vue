@@ -3,7 +3,7 @@
 </style>
 
 <template>
-    <div>
+    <div v-loading.fullscreen.lock="!firstLoad">
         <message
             v-for="message in messages"
             v-if="!message.parent_id || rootId == message.id"
@@ -61,6 +61,7 @@
             return {
                 messages: [],
                 loading: false,
+                firstLoad: false
             };
         },
 
@@ -72,6 +73,7 @@
         async mounted() {
             while (true) {
                 await this.fetch();
+                this.firstLoad = true;
                 await this.sleep(5000);
             }
         },
