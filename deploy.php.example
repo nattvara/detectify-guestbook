@@ -1,0 +1,64 @@
+<?php
+/*
+ * This file is part of nattvara/detectify-guestbook.
+ *
+ * (c) Ludwig Kristoffersson <ludwig@kristoffersson.org>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Deployer;
+
+require 'recipe/common.php';
+require 'recipe/npm.php';
+
+// Configuration
+set('ssh_type', 'native');
+set('ssh_multiplexing', true);
+set('repository', 'git@github.com:nattvara/detectify-guestbook.git');
+set('git_tty', true);
+set('allow_anonymous_stats', false);
+set('shared_files', [
+    '.env.php',
+]);
+
+host('[YOUR HOST NAME]')
+    ->stage('production')
+    ->user('ubuntu')
+    ->identityFile('~/.ssh/aws/personal-eu-west-1.pem')
+    ->set('deploy_path', '/var/www/[YOUR HOST NAME]')
+    ->set('branch', 'master');
+
+task('compile:assets', function () {
+    cd('{{release_path}}');
+    run('./node_modules/element-theme/bin/element-theme -c resources/sass/element-theme.scss -o resources/sass/element-theme');
+    run('npm run build');
+    run('rm -rf {{release_path}}/node_modules');
+});
+
+task('database:seed', function () {
+    cd('{{release_path}}');
+    run('php database/seeder.php');
+});
+
+task('database:setup', function () {
+    cd('{{release_path}}');
+    run('php database/setup.php');
+});
+
+task('deploy', [
+    'deploy:info',
+    'deploy:prepare',
+    'deploy:lock',
+    'deploy:release',
+    'deploy:update_code',
+    'npm:install',
+    'compile:assets',
+    'deploy:shared',
+    'deploy:vendors',
+    'deploy:writable',
+    'deploy:symlink',
+    'deploy:unlock',
+    'cleanup',
+]);

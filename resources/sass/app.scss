@@ -1,0 +1,46 @@
+/*
+ * This file is part of nattvara/detectify-guestbook.
+ *
+ * (c) Ludwig Kristoffersson <ludwig@kristoffersson.org>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+@import 'variables';
+
+body, p, a, h1, h2, h3, h4, h5, textarea {
+    font-family: $font, serif;
+}
+
+body {
+    background: $primary;
+}
+
+.message.el-card > .el-card__body {
+    padding-top: 0;
+}
+
+.el-badge__content {
+    border: none !important;
+}
+
+.el-badge.success {
+    sup {
+        background-color: $success !important;
+    }
+}
+
+.login.el-form-item.is-success .el-input__inner {
+    border-color: $font-color !important;
+}
+
+textarea {
+    border-color: mix($font-color, white, 50%) !important;
+    min-height: 100px !important;
+    resize: none !important;
+}
+
+.el-dialog {
+    max-width: 300px;
+}
