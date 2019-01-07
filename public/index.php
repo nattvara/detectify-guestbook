@@ -33,6 +33,8 @@ ImageResponse::setResourceDirectory(__DIR__ . '/../resources/img');
 
 $router = new Router;
 $router->registerRoutes([
+
+    // Auth routes
     new POST('/login', \Guestbook\Http\Controllers\LoginController::class, 'login'),
     new POST('/logout', \Guestbook\Http\Controllers\LoginController::class, 'logout'),
     new GET('/register', \Guestbook\Http\Controllers\LoginController::class, 'viewRegisterForm'),
@@ -42,11 +44,14 @@ $router->registerRoutes([
     new POST('/register/validate/password', \Guestbook\Http\Controllers\LoginController::class, 'validatePassword'),
     new POST('/register/validate/password_repeat', \Guestbook\Http\Controllers\LoginController::class, 'validatePasswordRepeat'),
 
+    // Profile
     new GET('/me', \Guestbook\Http\Controllers\UserController::class, 'me'),
 
+    // Message HTML routes
     new GET('/', \Guestbook\Http\Controllers\GuestbookController::class, 'index'),
     new GET('/messages/$id', \Guestbook\Http\Controllers\GuestbookController::class, 'viewMessage'),
 
+    // Message data routes
     new GET('/messages', \Guestbook\Http\Controllers\MessagesController::class, 'all'),
     new POST('/messages', \Guestbook\Http\Controllers\MessagesController::class, 'newMessage'),
     new POST('/messages/validate/text', \Guestbook\Http\Controllers\MessagesController::class, 'validateText'),
@@ -55,8 +60,6 @@ $router->registerRoutes([
     new POST('/messages/$id/vote/down', \Guestbook\Http\Controllers\MessagesController::class, 'downvote'),
 
     new GET('/main.js', \Guestbook\Http\Controllers\AssetController::class, 'js'),
-    new GET('/main.css', \Guestbook\Http\Controllers\AssetController::class, 'css'),
-    new GET('/logo.png', \Guestbook\Http\Controllers\AssetController::class, 'logo'),
 ]);
 
 $response = $router->route($request);
