@@ -15,12 +15,20 @@ use \PDO;
 class Database {
 
     /**
+     * @var PDO
+     */
+    private static $instance;
+
+    /**
      * Get PDO connection
      *
      * @param  bool $withDB if pdo should use database in connection dsn
      * @return PDO
      */
     public function getPdoConnection(bool $withDB = true): PDO {
+        if ($withDB && Database::$instance) {
+            return Database::$instance;
+        }
         $dsn = sprintf(
             'mysql:host=%s;dbname=%s;charset=utf8mb4;',
             getenv('host'),
@@ -29,7 +37,20 @@ class Database {
         $options = [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
         ];
-        return new PDO($dsn, getenv('username'), getenv('password'), $options);
+        $pdo = new PDO($dsn, getenv('username'), getenv('password'), $options);
+        if ($withDB) {
+            Database::$instance = $pdo;
+        }
+        return $pdo;
+    }
+
+    /**
+     * Clear singleton
+     *
+     * @return void
+     */
+    public static function clearSingleton() {
+        Database::$instance = null;
     }
 
     /**
