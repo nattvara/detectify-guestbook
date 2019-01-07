@@ -10,6 +10,7 @@
 
 use Guestbook\Helpers\Database;
 use Guestbook\Models\Exceptions\ReplyDepthException;
+use Guestbook\Models\Exceptions\VotingException;
 use Guestbook\Models\Message;
 use Guestbook\Models\User;
 
@@ -83,5 +84,22 @@ for ($i = 0; $i < rand(50, 100); $i++) {
                 break;
             } catch (ReplyDepthException $e) {}
         }
+    }
+}
+
+echo('voting on messages' . PHP_EOL);
+$messages = Message::all();
+foreach ($users as $user) {
+    $votes = rand(5, count($messages) - 1);
+    while ($votes > 0) {
+        try {
+            $message = $messages[rand(0, count($messages) - 1)];
+            if (rand(0, 1)) {
+                $message->upvote($user);
+            } else {
+                $message->downvote($user);
+            }
+            $votes--;
+        } catch (VotingException $e) {}
     }
 }
