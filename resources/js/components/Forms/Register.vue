@@ -31,24 +31,24 @@
                     <el-row>
                         <el-col :span="8">
                             <el-form-item prop="email" label="Email" :error="registerForm.errors.email">
-                                <el-input type="email" v-model="registerForm.form.email" placeholder="name@example.com"></el-input>
+                                <el-input type="email" v-model="registerForm.form.email" placeholder="name@example.com" @keyup.enter.native="register();"></el-input>
                             </el-form-item>
                         </el-col>
                         <el-col :span="8" :offset="1">
                             <el-form-item prop="name" label="Full Name" :error="registerForm.errors.name">
-                                <el-input type="text" v-model="registerForm.form.name" placeholder="John Doe"></el-input>
+                                <el-input type="text" v-model="registerForm.form.name" placeholder="John Doe" @keyup.enter.native="register();"></el-input>
                             </el-form-item>
                         </el-col>
                     </el-row>
                     <el-row>
                         <el-col :span="8">
                             <el-form-item prop="password" label="Password" :error="registerForm.errors.password">
-                                <el-input type="password" v-model="registerForm.form.password" autocomplete="off" placeholder="Just not 'password123'"></el-input>
+                                <el-input type="password" v-model="registerForm.form.password" autocomplete="off" placeholder="Just not 'password123'" @keyup.enter.native="register();"></el-input>
                             </el-form-item>
                         </el-col>
                         <el-col :span="8" :offset="1">
                             <el-form-item prop="password_repeat" label="Repeat Password" :error="registerForm.errors.password_repeat">
-                                <el-input type="password" v-model="registerForm.form.password_repeat" autocomplete="off" placeholder="Waaay easier with a password manager"></el-input>
+                                <el-input type="password" v-model="registerForm.form.password_repeat" autocomplete="off" placeholder="Waaay easier with a password manager" @keyup.enter.native="register();"></el-input>
                             </el-form-item>
                         </el-col>
                     </el-row>
