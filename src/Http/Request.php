@@ -53,6 +53,13 @@ class Request {
     private $urlVariables = [];
 
     /**
+     * Url query params
+     *
+     * @var array
+     */
+    private $queryParams = [];
+
+    /**
      * @var Validation
      */
     private $validation;
@@ -86,6 +93,7 @@ class Request {
         $this->setMethod($supportedMethods[$_SERVER['REQUEST_METHOD']]);
         $this->setPath($_SERVER['REQUEST_URI']);
 
+        $this->setQueryParams($_GET);
         $this->setInput($_POST);
         if (strpos($this->headers('content-type'), 'application/json') !== false) {
             $json = file_get_contents('php://input');
@@ -146,6 +154,32 @@ class Request {
      */
     public function getMethod() {
         return $this->method;
+    }
+
+    /**
+     * Set query params
+     *
+     * @param array $queryParams
+     * @return void
+     */
+    public function setQueryParams(array $queryParams) {
+        $this->queryParams = $queryParams;
+    }
+
+    /**
+     * Get query params
+     *
+     * @param  bool|string $key if defined value with specified key is returned
+     * @return mixed
+     */
+    public function getQueryParams($key = false) {
+        if (!$key) {
+            return $this->queryParams;
+        }
+        if (!isset($this->queryParams[$key])) {
+            return null;
+        }
+        return $this->queryParams[$key];
     }
 
     /**

@@ -91,6 +91,11 @@ abstract class Route {
         $inputPath  = explode('/', $inputPath);
         $basePath   = explode('/', $this->path);
         foreach ($basePath as $placement => $part) {
+
+            if (strpos($inputPath[$placement], '?') !== false) {
+                $inputPath[$placement] = substr($inputPath[$placement], 0, strpos($inputPath[$placement], '?'));
+            }
+
             if ($inputPath[$placement] === $part) {
                 continue;
             }
@@ -118,6 +123,9 @@ abstract class Route {
             if (strpos($part, Route::VARIABLE_CHARACTER) !== false) {
                 $name   = str_replace(Route::VARIABLE_CHARACTER, '', $part);
                 $value  = $inputPath[$placement];
+                if (strpos($value, '?') !== false) {
+                    $value = substr($value, 0, strpos($value, '?'));
+                }
                 $data[$name] = $value;
             }
         }
