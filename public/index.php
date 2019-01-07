@@ -46,6 +46,8 @@ $router->registerRoutes([
     new POST('/messages', \Guestbook\Http\Controllers\MessagesController::class, 'newMessage'),
     new POST('/messages/validate/text', \Guestbook\Http\Controllers\MessagesController::class, 'validateText'),
     new POST('/messages/$id', \Guestbook\Http\Controllers\MessagesController::class, 'reply'),
+    new POST('/messages/$id/vote/up', \Guestbook\Http\Controllers\MessagesController::class, 'upvote'),
+    new POST('/messages/$id/vote/down', \Guestbook\Http\Controllers\MessagesController::class, 'downvote'),
 
     new GET('/main.js', \Guestbook\Http\Controllers\AssetController::class, 'js'),
     new GET('/main.css', \Guestbook\Http\Controllers\AssetController::class, 'css'),

@@ -12,6 +12,7 @@ namespace Guestbook\Http\Controllers;
 
 use Guestbook\Http\Request;
 use Guestbook\Http\Responses\JsonResponse;
+use Guestbook\Models\Exceptions\VotingException;
 use Guestbook\Models\Message;
 
 class MessagesController extends Controller {
@@ -25,7 +26,7 @@ class MessagesController extends Controller {
     public function all(Request $request): JsonResponse {
         $messages = Message::all();
         foreach ($messages as $key => $message) {
-            $messages[$key] = $message->formatForClient();
+            $messages[$key] = $message->formatForClient($request->user());
         }
         return new JsonResponse([
             'messages'      => $messages,
@@ -124,5 +125,65 @@ class MessagesController extends Controller {
             'message'       => '',
             'created'       => $message->formatForClient()
         ]))->withStatusCode(201);
+    }
+
+    /**
+     * Upvote a message
+     *
+     * @param  Request $request
+     * @return JsonResponse
+     */
+    public function upvote(Request $request): JsonResponse {
+
+        $this->guard($request);
+        $this->validateCsrf($request);
+
+        try {
+            $message = Message::findByPublicId($request->urlVariable('id'));
+            $message->upvote($request->user());
+        } catch (VotingException $e) {
+            $error = $message->getAuthor()->getId() !== $request->user()->getId() ? 'Unkown error' : 'You cannot vote on your own message';
+            return (new JsonResponse([
+                'status_code'   => 500,
+                'message'       => $error,
+                'errors'        => []
+            ]))->withStatusCode(500);
+        }
+
+        return (new JsonResponse([
+            'status_code'   => 200,
+            'message'       => '',
+            'votes'         => $message->formatForClient($request->user())['votes']
+        ]))->withStatusCode(200);
+    }
+
+    /**
+     * Downvote a message
+     *
+     * @param  Request $request
+     * @return JsonResponse
+     */
+    public function downvote(Request $request): JsonResponse {
+
+        $this->guard($request);
+        $this->validateCsrf($request);
+
+        try {
+            $message = Message::findByPublicId($request->urlVariable('id'));
+            $message->downvote($request->user());
+        } catch (VotingException $e) {
+            $error = $message->getAuthor()->getId() !== $request->user()->getId() ? 'Unkown error' : 'You cannot vote on your own message';
+            return (new JsonResponse([
+                'status_code'   => 500,
+                'message'       => $error,
+                'errors'        => []
+            ]))->withStatusCode(500);
+        }
+
+        return (new JsonResponse([
+            'status_code'   => 200,
+            'message'       => '',
+            'votes'         => $message->formatForClient($request->user())['votes']
+        ]))->withStatusCode(200);
     }
 }
