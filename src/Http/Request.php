@@ -19,6 +19,7 @@ use Guestbook\Http\Validation\Validation;
 use Guestbook\Models\Cookie;
 use Guestbook\Models\Exceptions\UserNotFoundException;
 use Guestbook\Models\User;
+use \Throwable;
 
 class Request {
 
@@ -68,6 +69,13 @@ class Request {
      * @var User
      */
     private $user;
+
+    /**
+     * Request was thrown with an error
+     *
+     * @var Throwable
+     */
+    private $wasThrown;
 
     /**
      * New Request
@@ -412,6 +420,27 @@ class Request {
             return false;
         }
         return true;
+    }
+
+    /**
+     * Was thrown with
+     *
+     * @param Throwable $throwable
+     * @return void
+     */
+    public function wasThrownWith(Throwable $throwable) {
+        $this->wasThrown = $throwable;
+    }
+
+    /**
+     * Get error for request
+     *
+     * Returns null if no error occured
+     *
+     * @return Throwable|null
+     */
+    public function getError(): ?Throwable {
+        return $this->wasThrown;
     }
 
     /**
