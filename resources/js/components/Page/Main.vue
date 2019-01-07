@@ -20,7 +20,6 @@
         <el-header>
             <page-header
                 :show-login-register="showLoginRegister"
-                :authenticated="authenticated"
                 :name="name"
                 :email="email"></page-header>
         </el-header>
@@ -30,6 +29,7 @@
         <el-footer></el-footer>
     </el-container>
 </template>
+
 <script>
     import PageHeader from './Header'
     export default {
@@ -40,10 +40,6 @@
          * @type {Object}
          */
         props: {
-            authenticated: {
-                type: Boolean,
-                default: false
-            },
             showLoginRegister: {
                 type: Boolean,
                 default: true

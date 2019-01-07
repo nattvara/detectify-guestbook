@@ -19,10 +19,29 @@ if (csrf) {
 
 
 import Vue from 'vue';
+
+// Element UI
 import Element from 'element-ui'
 import locale from 'element-ui/lib/locale/lang/en'
-
 Vue.use(Element, { locale })
+
+// Font Awesome
+import { library } from '@fortawesome/fontawesome-svg-core'
+import {
+    faReply,
+    faShareAlt
+} from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+library.add(faReply)
+library.add(faShareAlt)
+Vue.component('font-awesome-icon', FontAwesomeIcon)
+
+// vue-scrollto
+import VueScrollTo from 'vue-scrollto'
+Vue.use(VueScrollTo)
+
+
+// nattvara/detectify-guestbook components
 Vue.component('page', require('./components/Page/Main.vue').default);
 Vue.component('register-form', require('./components/Forms/Register.vue').default);
 Vue.component('messages', require('./components/Messages/Main.vue').default);
@@ -33,11 +52,26 @@ Vue.mixin({
         /**
          * Goto path
          *
-         * @param  {String} path
+         * @param  {String}  path
+         * @param  {Boolean} openInNewTab
          * @return {void}
          */
-        goTo(path) {
+        goTo(path, openInNewTab = false) {
+            if (openInNewTab) {
+                var win = window.open(path, '_blank');
+                win.focus();
+                return;
+            }
             window.location.href = path;
+        },
+
+        /**
+         * Check if use logged in
+         *
+         * @return {Boolean}
+         */
+        loggedIn() {
+            return window.authenticated;
         },
 
         /**

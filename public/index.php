@@ -30,7 +30,6 @@ ImageResponse::setResourceDirectory(__DIR__ . '/../resources/img');
 
 $router = new Router;
 $router->registerRoutes([
-    new GET('/login', \Guestbook\Http\Controllers\LoginController::class, 'viewLoginForm'),
     new POST('/login', \Guestbook\Http\Controllers\LoginController::class, 'login'),
     new POST('/logout', \Guestbook\Http\Controllers\LoginController::class, 'logout'),
     new GET('/register', \Guestbook\Http\Controllers\LoginController::class, 'viewRegisterForm'),
@@ -43,6 +42,14 @@ $router->registerRoutes([
     new GET('/me', \Guestbook\Http\Controllers\UserController::class, 'me'),
 
     new GET('/', \Guestbook\Http\Controllers\GuestbookController::class, 'index'),
+    new GET('/messages/$id', \Guestbook\Http\Controllers\GuestbookController::class, 'viewMessage'),
+
+    new GET('/messages', \Guestbook\Http\Controllers\MessagesController::class, 'all'),
+    new POST('/messages', \Guestbook\Http\Controllers\MessagesController::class, 'newMessage'),
+    new POST('/messages/validate/text', \Guestbook\Http\Controllers\MessagesController::class, 'validateText'),
+    new POST('/messages/$id', \Guestbook\Http\Controllers\MessagesController::class, 'reply'),
+    new POST('/messages/$id/vote/up', \Guestbook\Http\Controllers\MessagesController::class, 'upvote'),
+    new POST('/messages/$id/vote/down', \Guestbook\Http\Controllers\MessagesController::class, 'downvote'),
 
     new GET('/main.js', \Guestbook\Http\Controllers\AssetController::class, 'js'),
     new GET('/main.css', \Guestbook\Http\Controllers\AssetController::class, 'css'),

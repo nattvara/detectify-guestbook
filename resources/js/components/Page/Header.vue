@@ -35,9 +35,9 @@
 
         <el-row class="below_title">
 
-            <login-register v-if="!authenticated && showLoginRegister"></login-register>
+            <login-register v-if="!loggedIn() && showLoginRegister"></login-register>
 
-            <el-row v-if="authenticated" type="flex" justify="center">
+            <el-row v-if="loggedIn()" type="flex" justify="center">
                 <div>
                     <el-col :span="12" style="border-right: 2px solid black;">
                         <el-button type="text" class="name">{{ name }}</el-button>
@@ -50,6 +50,7 @@
         </el-row>
     </div>
 </template>
+
 <script>
     import LoginRegister from './../Forms/LoginRegisterContainer'
     export default {
@@ -60,10 +61,6 @@
          * @type {Object}
          */
         props: {
-            authenticated: {
-                type: Boolean,
-                default: false
-            },
             showLoginRegister: {
                 type: Boolean,
                 default: true

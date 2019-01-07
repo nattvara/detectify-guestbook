@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Guestbook</title>
+    <title>Guestbook | {{author}} wrote, "{{text}}"</title>
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" href="/main.css" defer async>
     <link href="https://fonts.googleapis.com/css?family=Philosopher:400,400i,700" rel="stylesheet">
@@ -13,7 +13,7 @@
         <page
             name="{{name}}"
             email="{{email}}">
-            <messages></messages>
+            <messages root-id="{{message_id}}"></messages>
         </page>
     </div>
 

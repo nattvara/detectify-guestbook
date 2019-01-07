@@ -33,7 +33,30 @@ CREATE TABLE `cookies` (
   UNIQUE KEY `token_unique` (`token`),
   KEY `cookies_user_id_to_users_table` (`user_id`),
   CONSTRAINT `cookies_user_id_to_users_table` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `messages`
+--
+
+DROP TABLE IF EXISTS `messages`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `messages` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `public_id` varchar(32) NOT NULL DEFAULT '',
+  `author_id` int(11) unsigned NOT NULL,
+  `parent_id` int(11) unsigned DEFAULT NULL,
+  `text` text NOT NULL,
+  `created_at` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `public_id_unique` (`public_id`),
+  KEY `author_id_to_users_table` (`author_id`),
+  KEY `parent_id_to_message_table` (`parent_id`),
+  CONSTRAINT `author_id_to_users_table` FOREIGN KEY (`author_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `parent_id_to_message_table` FOREIGN KEY (`parent_id`) REFERENCES `messages` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -52,7 +75,28 @@ CREATE TABLE `users` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `email_unique` (`email`),
   UNIQUE KEY `public_id_unique` (`public_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `votes`
+--
+
+DROP TABLE IF EXISTS `votes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `votes` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `message_id` int(11) unsigned NOT NULL,
+  `cast_by` int(11) unsigned NOT NULL,
+  `sentiment` tinyint(1) NOT NULL,
+  `cast_at` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `message_id_to_messages` (`message_id`),
+  KEY `cast_by_to_users` (`cast_by`),
+  CONSTRAINT `cast_by_to_users` FOREIGN KEY (`cast_by`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `message_id_to_messages` FOREIGN KEY (`message_id`) REFERENCES `messages` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -64,4 +108,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-01-01 19:57:21
+-- Dump completed on 2019-01-07  1:06:59

@@ -153,4 +153,25 @@ class RouterTest extends TestCase {
 
     }
 
+    /**
+     * Add support for url variables
+     *
+     * @return void
+     */
+    public function test_url_variables_can_be_used_inside_controllers() {
+
+        $request = new Request;
+        $request->setPath('/some/path/foo/bar/baz'); // foo and bar are variables
+        $request->setMethod(GET::class);
+
+        $this->router->registerRoute(
+            new GET('/some/path/$var_1/$var_2/baz', DummyController::class, 'printVarOneAndTwo')
+        );
+
+        $response = $this->router->route($request);
+        $this->assertStringContainsString('foo', $response->getResponseBody());
+        $this->assertStringContainsString('bar', $response->getResponseBody());
+
+    }
+
 }

@@ -17,6 +17,12 @@
 
     .el-form {
         margin: auto;
+
+        &.not-inline {
+            .el-form-item {
+                margin-bottom: 40px;
+            }
+        }
     }
 
     .submit {
@@ -42,10 +48,11 @@
             <el-row type="flex" justify="center" v-show="loginForm.show">
                 <el-form
                     ref="form"
-                    size="mini"
+                    :size="size"
                     :model="loginForm.form"
                     :rules="loginForm.rules"
-                    :inline="true">
+                    :inline="inline"
+                    :class="{'not-inline': !inline}">
                     <el-form-item prop="email" class="login" :error="loginForm.errors.email">
                         <el-input type="email" v-model="loginForm.form.email" placeholder="Email"></el-input>
                     </el-form-item>
@@ -54,15 +61,40 @@
                     </el-form-item>
                     <el-form-item>
                         <el-button class="submit" type="primary" plain @click="attemptLogin();">Login</el-button>
-                        <el-button class="submit" type="secondary" plain @click="hideLoginForm();">Cancel</el-button>
+                        <el-button class="submit" type="secondary" plain @click="hideLoginForm();" v-if="showCancel">Cancel</el-button>
                     </el-form-item>
                 </el-form>
             </el-row>
         </transition>
     </div>
 </template>
+
 <script>
     export default {
+
+        /**
+         * Components properties
+         *
+         * @type {Object}
+         */
+        props: {
+            size: {
+                type: String,
+                default: 'mini'
+            },
+            showCancel: {
+                type: Boolean,
+                default: true
+            },
+            showButtons: {
+                type: Boolean,
+                default: true
+            },
+            inline: {
+                type: Boolean,
+                default: true
+            }
+        },
 
         /**
          * Components data
@@ -98,11 +130,15 @@
         },
 
         /**
-         * Components properties
+         * Component was mounted
          *
-         * @type {Object}
+         * @return {void}
          */
-        props: {},
+        mounted() {
+            if (!this.showButtons) {
+                this.showLoginForm();
+            }
+        },
 
         /**
          * Components methods

@@ -23,17 +23,6 @@ use Guestbook\Models\User;
 class LoginController extends Controller {
 
     /**
-     * View the login form
-     *
-     * @param  Request $request
-     * @return HtmlResponse
-     */
-    public function viewLoginForm(Request $request): HtmlResponse {
-        $this->guest($request);
-        return (new HtmlResponse('login.html'))->withCsrfToken($request);
-    }
-
-    /**
      * Login in a user
      *
      * @param  Request $request

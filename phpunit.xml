@@ -19,5 +19,6 @@
         <env name="port" value="3306"/>
         <env name="db" value="guestbook_test"/>
         <env name="pwnedpasswords_endpoint" value="https://api.pwnedpasswords.com/range/"/>
+        <env name="message_reply_limit" value="5"/>
     </php>
 </phpunit>

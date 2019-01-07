@@ -46,6 +46,20 @@ class Request {
     private $data = [];
 
     /**
+     * Url variables
+     *
+     * @var array
+     */
+    private $urlVariables = [];
+
+    /**
+     * Url query params
+     *
+     * @var array
+     */
+    private $queryParams = [];
+
+    /**
      * @var Validation
      */
     private $validation;
@@ -79,6 +93,7 @@ class Request {
         $this->setMethod($supportedMethods[$_SERVER['REQUEST_METHOD']]);
         $this->setPath($_SERVER['REQUEST_URI']);
 
+        $this->setQueryParams($_GET);
         $this->setInput($_POST);
         if (strpos($this->headers('content-type'), 'application/json') !== false) {
             $json = file_get_contents('php://input');
@@ -142,6 +157,32 @@ class Request {
     }
 
     /**
+     * Set query params
+     *
+     * @param array $queryParams
+     * @return void
+     */
+    public function setQueryParams(array $queryParams) {
+        $this->queryParams = $queryParams;
+    }
+
+    /**
+     * Get query params
+     *
+     * @param  bool|string $key if defined value with specified key is returned
+     * @return mixed
+     */
+    public function getQueryParams($key = false) {
+        if (!$key) {
+            return $this->queryParams;
+        }
+        if (!isset($this->queryParams[$key])) {
+            return null;
+        }
+        return $this->queryParams[$key];
+    }
+
+    /**
      * Set input data
      *
      * @param array $data
@@ -168,6 +209,29 @@ class Request {
     }
 
     /**
+     * Set url variables
+     *
+     * @param array $urlVariables
+     * @return void
+     */
+    public function setUrlVariables(array $urlVariables) {
+        $this->urlVariables = $urlVariables;
+    }
+
+    /**
+     * Get the value of a url variable
+     *
+     * @param  string $name
+     * @return string
+     */
+    public function urlVariable(string $name): string {
+        if (!isset($this->urlVariables[$name])) {
+            return null;
+        }
+        return $this->urlVariables[$name];
+    }
+
+    /**
      * Get header(s)
      *
      * @param  null|string $name fetch a specific header, returns null if it don't exist
@@ -186,6 +250,18 @@ class Request {
             return $headers[$name];
         }
         return null;
+    }
+
+    /**
+     * Check if request content type is json
+     *
+     * @return boolean
+     */
+    public function isJson(): bool {
+        if (strpos($this->headers('content-type'), 'application/json') !== false) {
+            return true;
+        }
+        return false;
     }
 
     /**

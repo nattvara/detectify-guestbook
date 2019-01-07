@@ -8,10 +8,6 @@
  * file that was distributed with this source code.
  */
 
-putenv('host=127.0.0.1');
-putenv('username=root');
-putenv('password=root');
-putenv('port=3306');
-putenv('db=guestbook');
-putenv('pwnedpasswords_endpoint=https://api.pwnedpasswords.com/range/');
-putenv('message_reply_limit=5');
+namespace Guestbook\Models\Exceptions;
+
+class VotingException extends \Exception {}
