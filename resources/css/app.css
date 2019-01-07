@@ -1,0 +1,21 @@
+/*
+ * This file is part of nattvara/detectify-guestbook.
+ *
+ * (c) Ludwig Kristoffersson <ludwig@kristoffersson.org>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+h1 {
+    font-family: Helvetica, sans-serif;
+}
+
+img {
+    max-width: 100px;
+}
+
+input, label, button {
+    float: left;
+    margin: 5px;
+}

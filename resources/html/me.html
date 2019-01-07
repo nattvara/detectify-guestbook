@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Guestbook</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="/app.css" defer async>
+</head>
+<body>
+
+    <img src="/logo.png">
+
+    <p>Hello {{name}}</p>
+
+    <form method="POST" action="/logout">
+
+        <button type="submit">Logout</button>
+
+        {{csrf}}
+    </form>
+
+    <div id="app">
+
+        <br>
+        <br>
+        <el-button type="success" icon="el-icon-check" circle></el-button>
+        <br>
+        <br>
+        <example></example>
+        <example2></example2>
+    </div>
+
+    <script type="text/javascript" src="/main.js"></script>
+</body>
+</html>
