@@ -1,16 +1,21 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Guestbook - Not found</title>
+    <title>Guestbook | 404 Not Found</title>
     <meta charset="utf-8">
-    <link rel="stylesheet" type="text/css" href="/app.css" defer async>
+    <link rel="stylesheet" type="text/css" href="/main.css" defer async>
+    <link href="https://fonts.googleapis.com/css?family=Philosopher:400,400i,700" rel="stylesheet">
+    <meta name="csrf_token" content="{{csrf_token}}">
 </head>
 <body>
 
-    <h1>404</h1>
+    <div id="app">
+        <page :show-login-register="false">
+            <huge text="Oooops - 404" style="margin-top: 50px;"></huge>
+            <medium text="The resource wasn't found"></medium>
+        </page>
+    </div>
 
-    <img src="/logo.png">
-
-    <script type="text/javascript" src="/app.js"></script>
+    <script type="text/javascript" src="/main.js"></script>
 </body>
 </html>
