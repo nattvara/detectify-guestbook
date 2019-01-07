@@ -25,6 +25,12 @@ body {
     border: none !important;
 }
 
+.el-badge.success {
+    sup {
+        background-color: $success !important;
+    }
+}
+
 .login.el-form-item.is-success .el-input__inner {
     border-color: $font-color !important;
 }

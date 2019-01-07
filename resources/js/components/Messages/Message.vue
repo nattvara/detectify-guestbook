@@ -9,6 +9,7 @@
         border-right: none;
         border-left: 6px solid mix($secondary, $primary, 70%);
         border-bottom: 6px solid mix($secondary, $primary, 70%);
+        box-shadow: 0px 0px 1px mix(mix($secondary, $primary, 70%), #000, 80%);
     }
 
     p {
@@ -28,6 +29,12 @@
 
         .el-badge {
             margin-right: 30px;
+
+            &.voted {
+                .el-button {
+                    color: $success;
+                }
+            }
         }
     }
 
@@ -48,11 +55,11 @@
             </el-row>
 
             <el-row class="actions">
-                <el-badge :value="12" class="action">
-                    <el-button type="text">Upvote</el-button>
+                <el-badge :value="votes.up" class="action" :class="{voted: votes.my_vote === 'up', success: votes.my_vote === 'up'}">
+                    <el-button type="text" @click="vote('up');">Upvote</el-button>
                 </el-badge>
-                <el-badge :value="12" class="action">
-                    <el-button type="text">Downvote</el-button>
+                <el-badge :value="votes.down" class="action" :class="{voted: votes.my_vote === 'down', success: votes.my_vote === 'down'}">
+                    <el-button type="text" @click="vote('down');">Downvote</el-button>
                 </el-badge>
                 <el-button type="text" class="action" @click="showReply();">
                     Reply
@@ -71,6 +78,7 @@
                     :author="message.author"
                     :author-id="message.author_id"
                     :text="message.text"
+                    :votes="message.votes"
                     :created-at="message.created_at"
                     :responses="responses"
                     :messages="messages"
@@ -116,12 +124,13 @@
         props: {
             id: String,
             text: String,
+            votes: Object,
             author: String,
             isRoot: Boolean,
+            messages: Array,
             authorId: String,
             parentId: String,
             createdAt: String,
-            messages: Array,
             responses: Function
         },
 
@@ -157,6 +166,24 @@
                     force: true,
                     offset: -200
                 });
+            },
+
+            /**
+             * Vote on message
+             *
+             * @param  {String} sentiment up|down
+             * @return {void}
+             */
+            async vote(sentiment) {
+                try {
+                    let url             = '/messages/' + this.id + '/vote/' + sentiment;
+                    var response        = await axios.post(url);
+                    this.votes.up       = response.data.votes.up;
+                    this.votes.down     = response.data.votes.down;
+                    this.votes.my_vote  = response.data.votes.my_vote;
+                } catch (e) {
+                    this.alertError(e.response.data.message);
+                }
             }
         }
     }

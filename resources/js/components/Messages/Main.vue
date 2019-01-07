@@ -14,6 +14,7 @@
             :author="message.author"
             :author-id="message.author_id"
             :text="message.text"
+            :votes="message.votes"
             :created-at="message.created_at"
             :responses="responses"
             :messages="messages"
