@@ -44,3 +44,8 @@ textarea {
 .el-dialog {
     max-width: 300px;
 }
+
+input, label, button {
+    float: left;
+    margin: 5px;
+}
