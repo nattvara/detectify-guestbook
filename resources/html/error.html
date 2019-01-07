@@ -1,16 +1,21 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Guestbook - Error</title>
+    <title>Guestbook | Error</title>
     <meta charset="utf-8">
-    <link rel="stylesheet" type="text/css" href="/app.css" defer async>
+    <link rel="stylesheet" type="text/css" href="/main.css" defer async>
+    <link href="https://fonts.googleapis.com/css?family=Philosopher:400,400i,700" rel="stylesheet">
+    <meta name="csrf_token" content="{{csrf_token}}">
 </head>
 <body>
 
-    <img src="/logo.png">
+    <div id="app">
+        <page :show-login-register="false">
+            <huge text="Error" style="margin-top: 50px;"></huge>
+            <medium text="{{reason}}"></medium>
+        </page>
+    </div>
 
-    <h1>Error - {{reason}}</h1>
-
-    <script type="text/javascript" src="/app.js"></script>
+    <script type="text/javascript" src="/main.js"></script>
 </body>
 </html>

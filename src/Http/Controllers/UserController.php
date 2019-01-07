@@ -24,7 +24,9 @@ class UserController extends Controller {
     public function me(Request $request): HtmlResponse {
         $this->guard($request);
         return (new HtmlResponse('me.html', [
-            'name' => $request->user()->getName()
+            'authenticated' => 'true',
+            'name'          => $request->user()->getName(),
+            'email'         => $request->user()->getEmail(),
         ]))->withCsrfToken($request);
     }
 

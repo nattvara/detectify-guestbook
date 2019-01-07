@@ -1,34 +1,35 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Guestbook</title>
+    <title>Guestbook | me</title>
     <meta charset="utf-8">
-    <link rel="stylesheet" type="text/css" href="/app.css" defer async>
+    <link rel="stylesheet" type="text/css" href="/main.css" defer async>
+    <link href="https://fonts.googleapis.com/css?family=Philosopher:400,400i,700" rel="stylesheet">
+    <meta name="csrf_token" content="{{csrf_token}}">
 </head>
 <body>
 
-    <img src="/logo.png">
-
-    <p>Hello {{name}}</p>
-
-    <form method="POST" action="/logout">
-
-        <button type="submit">Logout</button>
-
-        {{csrf}}
-    </form>
-
     <div id="app">
+        <page
+            name="{{name}}"
+            email="{{email}}">
 
-        <br>
-        <br>
-        <el-button type="success" icon="el-icon-check" circle></el-button>
-        <br>
-        <br>
-        <example></example>
-        <example2></example2>
+            <medium text="Your name is" style="margin-top: 50px;"></medium>
+            <huge text="{{name}}"></huge>
+
+        </page>
     </div>
 
+    <form id="logout-form" action="/logout" method="POST" style="display: none;">
+        {{csrf}}
+    </form>
+    <script type="text/javascript">
+        if ("{{authenticated}}") {
+            window.authenticated = "{{authenticated}}" == "true" ? true : false;
+        } else {
+            window.authenticated = false;
+        }
+    </script>
     <script type="text/javascript" src="/main.js"></script>
 </body>
 </html>
