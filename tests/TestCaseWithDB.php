@@ -32,6 +32,7 @@ class TestCaseWithDB extends TestCase {
      */
     protected function setUp() {
         try {
+            Database::clearSingleton();
             $this->db = Database::getPDOConnection(false);
         } catch (PDOException $e) {
             echo(PHP_EOL . 'Failed to connect to database. Skipping test.' . PHP_EOL);

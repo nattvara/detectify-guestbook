@@ -109,7 +109,7 @@
              */
             responses(messages, parentId) {
                 var responses = [];
-                for (var i = messages.length - 1; i >= 0; i--) {
+                for (var i = 0; i < messages.length; i++) {
                     if (messages[i].parent_id === parentId) {
                         responses.push(messages[i]);
                     }
