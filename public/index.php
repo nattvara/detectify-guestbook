@@ -42,6 +42,8 @@ $router->registerRoutes([
     new GET('/me', \Guestbook\Http\Controllers\UserController::class, 'me'),
 
     new GET('/', \Guestbook\Http\Controllers\GuestbookController::class, 'index'),
+    new GET('/messages/$id', \Guestbook\Http\Controllers\GuestbookController::class, 'viewMessage'),
+
     new GET('/messages', \Guestbook\Http\Controllers\MessagesController::class, 'all'),
     new POST('/messages', \Guestbook\Http\Controllers\MessagesController::class, 'newMessage'),
     new POST('/messages/validate/text', \Guestbook\Http\Controllers\MessagesController::class, 'validateText'),
