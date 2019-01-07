@@ -115,11 +115,11 @@ class Router {
                 if ($request->isJson()) {
                     return (new JsonResponse([
                         'status_code'   => 500,
-                        'message'       => 'Invalid CSRF Token',
+                        'message'       => 'Please reload the page and try again (CSRF Token)',
                         'errors'        => []
                     ]))->withStatusCode(500);
                 }
-                return (new HtmlResponse('error.html', ['reason' => 'Invalid CSRF Token']))->withStatusCode(500);
+                return (new HtmlResponse('error.html', ['reason' => 'Please reload the page and try again (CSRF Token)']))->withStatusCode(500);
             },
             'general' => function() use ($request) {
                 if ($request->isJson()) {

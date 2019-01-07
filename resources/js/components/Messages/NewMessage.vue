@@ -11,6 +11,7 @@
 
     .el-form.blur {
         filter: blur(2px);
+        pointer-events: none;
     }
 
     .login-msg {

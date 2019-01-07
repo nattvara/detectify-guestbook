@@ -59,7 +59,8 @@
          */
         data() {
             return {
-                messages: []
+                messages: [],
+                loading: false,
             };
         },
 
@@ -88,7 +89,11 @@
              * @return {void}
              */
             async fetch() {
+                if (this.loading) {
+                    return;
+                }
                 try {
+                    this.loading = true;
                     let url = '/messages';
                     if (this.rootId) {
                         url += '/' + this.rootId + '?format=json';
@@ -97,6 +102,8 @@
                     this.messages = response.data.messages;
                 } catch (e) {
                     this.alertError('Failed to load messages');
+                } finally {
+                    this.loading = false;
                 }
             },
 

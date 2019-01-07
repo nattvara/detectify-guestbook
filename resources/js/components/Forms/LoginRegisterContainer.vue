@@ -192,6 +192,10 @@
                         }
                         this.loginForm.errors[error.field] += error.human_friendly;
                     }
+
+                    if (e.response.data.message) {
+                        this.alertError(e.response.data.message);
+                    }
                     return;
                 }
 
@@ -200,7 +204,9 @@
                     return;
                 }
 
-                this.alertError(response.data.message);
+                if (response.data.message) {
+                    this.alertError(response.data.message);
+                }
             }
 
         }
