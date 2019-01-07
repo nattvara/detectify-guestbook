@@ -118,6 +118,42 @@ class Message {
     }
 
     /**
+     * Find all messages starting at a specific message
+     *
+     * @param  Message $start
+     * @return array
+     */
+    public static function findAllStartingAtMessage(Message $start): array {
+        $messages   = Message::all();
+        $out        = [];
+        $adder      = function($message, $key) use (&$out, &$messages) {
+            $out[] = $message;
+            unset($messages[$key]);
+            return true;
+        };
+        do {
+            $add = false;
+            foreach ($messages as $key => $message) {
+                if ($message->getId() === $start->getId()) {
+                    $add = $adder($message, $key);
+                }
+
+                if (!$message->hasParentMessage()) {
+                    continue;
+                }
+
+                foreach ($out as $msg) {
+                    if ($message->getParentMessageId() == $msg->getId()) {
+                        $add = $adder($message, $key);
+                    }
+                }
+            }
+        } while ($add);
+
+        return $out;
+    }
+
+    /**
      * Find message by public id
      *
      * @param  string $id public_id
@@ -321,6 +357,15 @@ class Message {
         }
         $this->parentMessage = Message::findById($this->parentMessageId);
         return $this->getParentMessage();
+    }
+
+    /**
+     * Get parent message id
+     *
+     * @return int
+     */
+    protected function getParentMessageId(): int {
+        return $this->parentMessageId;
     }
 
     /**
