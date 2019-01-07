@@ -65,6 +65,10 @@
                     Reply
                     <font-awesome-icon icon="reply" />
                 </el-button>
+                <el-button type="text" class="action" @click="goTo('/messages/' + id, true);">
+                    Share
+                    <font-awesome-icon icon="share-alt" />
+                </el-button>
             </el-row>
 
             <div>

@@ -28,10 +28,12 @@ Vue.use(Element, { locale })
 // Font Awesome
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
-    faReply
+    faReply,
+    faShareAlt
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 library.add(faReply)
+library.add(faShareAlt)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
 // vue-scrollto
@@ -50,10 +52,16 @@ Vue.mixin({
         /**
          * Goto path
          *
-         * @param  {String} path
+         * @param  {String}  path
+         * @param  {Boolean} openInNewTab
          * @return {void}
          */
-        goTo(path) {
+        goTo(path, openInNewTab = false) {
+            if (openInNewTab) {
+                var win = window.open(path, '_blank');
+                win.focus();
+                return;
+            }
             window.location.href = path;
         },
 

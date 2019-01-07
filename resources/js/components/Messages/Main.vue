@@ -6,7 +6,7 @@
     <div>
         <message
             v-for="message in messages"
-            v-if="!message.parent_id"
+            v-if="!message.parent_id || rootId == message.id"
             :key="message.id"
             :id="message.id"
             :is-root="true"
@@ -21,7 +21,7 @@
             @reload-messages="fetch();"
             ></message>
 
-        <new-message @reload-messages="fetch();"></new-message>
+        <new-message @reload-messages="fetch();" v-if="rootId === ''"></new-message>
     </div>
 </template>
 
@@ -38,6 +38,18 @@
         components: {
             Message,
             NewMessage
+        },
+
+        /**
+         * Components properties
+         *
+         * @type {Object}
+         */
+        props: {
+            rootId: {
+                type: String,
+                default: ''
+            }
         },
 
         /**
@@ -77,7 +89,11 @@
              */
             async fetch() {
                 try {
-                    let response = await axios.get('/messages');
+                    let url = '/messages';
+                    if (this.rootId) {
+                        url += '/' + this.rootId + '?format=json';
+                    }
+                    let response = await axios.get(url);
                     this.messages = response.data.messages;
                 } catch (e) {
                     this.alertError('Failed to load messages');
