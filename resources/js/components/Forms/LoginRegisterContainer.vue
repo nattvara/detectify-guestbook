@@ -17,6 +17,12 @@
 
     .el-form {
         margin: auto;
+
+        &.not-inline {
+            .el-form-item {
+                margin-bottom: 40px;
+            }
+        }
     }
 
     .submit {
@@ -45,7 +51,8 @@
                     :size="size"
                     :model="loginForm.form"
                     :rules="loginForm.rules"
-                    :inline="true">
+                    :inline="inline"
+                    :class="{'not-inline': !inline}">
                     <el-form-item prop="email" class="login" :error="loginForm.errors.email">
                         <el-input type="email" v-model="loginForm.form.email" placeholder="Email"></el-input>
                     </el-form-item>
@@ -80,6 +87,10 @@
                 default: true
             },
             showButtons: {
+                type: Boolean,
+                default: true
+            },
+            inline: {
                 type: Boolean,
                 default: true
             }

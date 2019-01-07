@@ -51,14 +51,20 @@
             <el-row class="new" v-show="messageForm.show">
                 <el-col :span="22" :offset="1">
                     <el-row class="title">
-                        <h2>Write a message</h2>
+                        <h2>
+                            Write a
+                            <span v-if="!replyTo">message</span>
+                            <span v-if="replyTo">response</span>
+                        </h2>
                     </el-row>
                     <el-row v-if="!loggedIn()" class="login-msg">
                         <h2 class="auth">
                             <el-button type="text" class="auth" @click="login();">Login</el-button>
                             or
                             <el-button type="text" class="auth" @click="goTo('/register');">Register</el-button>
-                            to write a message
+                            to write a
+                            <span v-if="!replyTo">message</span>
+                            <span v-if="replyTo">response</span>
                         </h2>
                     </el-row>
                     <el-row>
@@ -84,11 +90,12 @@
                 </el-col>
             </el-row>
         </transition>
-        <el-dialog title="Login" :visible.sync="loginDialog.display" :modal-append-to-body="false">
+        <el-dialog title="Login" :visible.sync="loginDialog.display" :modal-append-to-body="false" width="70%">
             <login-register
                 size="large"
                 :show-cancel="false"
-                :show-buttons="false"></login-register>
+                :show-buttons="false"
+                :inline="false"></login-register>
         </el-dialog>
     </div>
 </template>
