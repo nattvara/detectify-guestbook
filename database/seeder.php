@@ -70,7 +70,7 @@ foreach (array_keys($users) as $user) {
 }
 
 echo('generating threads' . PHP_EOL);
-for ($i = 0; $i < rand(50, 100); $i++) {
+for ($i = 0; $i < 30; $i++) {
     $message = $messages[rand(0, count($messages) - 1)];
     $reply   = rand(0, 4);
     if ($reply < 1 || $i == 0) {
