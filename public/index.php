@@ -8,6 +8,7 @@
  * file that was distributed with this source code.
  */
 
+use Guestbook\Http\Log;
 use Guestbook\Http\Request;
 use Guestbook\Http\Responses\CssResponse;
 use Guestbook\Http\Responses\HtmlResponse;
@@ -19,6 +20,8 @@ use Guestbook\Http\Routes\POST;
 
 require_once(__DIR__ . '/../vendor/autoload.php');
 require_once(__DIR__ . '/../.env.php');
+
+define('REQUEST_START', microtime(true));
 
 $request = new Request;
 $request->readPhpGlobals();
@@ -58,3 +61,4 @@ $router->registerRoutes([
 
 $response = $router->route($request);
 $response->write();
+Log::http($request, $response);
