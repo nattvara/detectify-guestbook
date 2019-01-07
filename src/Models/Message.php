@@ -107,7 +107,12 @@ class Message {
      */
     public static function all(): array {
         $db         = Database::getPDOConnection();
-        $stmt       = $db->prepare('SELECT * FROM `messages`;');
+        $stmt       = $db->prepare('
+            SELECT `messages`.*, SUM(`votes`.`sentiment`) AS `sentiment` FROM `messages`
+            LEFT JOIN `votes` ON `messages`.`id` = `votes`.`message_id`
+            GROUP BY `messages`.`id`
+            ORDER BY `sentiment` DESC, `created_at` DESC;
+        ');
         $stmt->execute();
         $rows       = $stmt->fetchAll();
         $messages   = [];
@@ -434,7 +439,7 @@ class Message {
      */
     public function downvote(User $voter) {
         $this->removeVoteIfCast($voter);
-        $this->castVote($voter, 0);
+        $this->castVote($voter, -1);
     }
 
     /**
@@ -457,7 +462,7 @@ class Message {
             'cast_by'       => $voter->getId(),
             'sentiment'     => $sentiment
         ]);
-        if ($sentiment) {
+        if ($sentiment === 1) {
             $this->upvotes++;
         } else {
             $this->downvotes++;
@@ -526,7 +531,7 @@ class Message {
         $this->upvotes = (int) $stmt->fetch()['votes'];
 
         $stmt = $this->db->prepare($sql);
-        $stmt->execute(['id' => $this->id, 'sentiment' => 0]);
+        $stmt->execute(['id' => $this->id, 'sentiment' => -1]);
         $this->downvotes = (int) $stmt->fetch()['votes'];
     }
 
@@ -552,7 +557,7 @@ class Message {
         if (!$row) {
             return null;
         }
-        if ((int) $row['sentiment']) {
+        if ((int) $row['sentiment'] === 1) {
             return 'up';
         }
         return 'down';
