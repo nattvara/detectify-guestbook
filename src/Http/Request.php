@@ -372,9 +372,9 @@ class Request {
         if (!isset($_COOKIE['token'])) {
             return;
         }
-        $token  = $_COOKIE['token'];
+        $token = $_COOKIE['token'];
         try {
-            $user   = User::findByCookieToken($token);
+            $user = User::findByCookieToken($token);
             $user->signIn($this, false);
         } catch (UserNotFoundException $e) {
             $this->clearCookies();
@@ -390,6 +390,8 @@ class Request {
         try {
             $this->user();
         } catch (UnauthenticatedException $e) {
+            return;
+        } catch (UserNotFoundException $e) {
             return;
         }
     }
