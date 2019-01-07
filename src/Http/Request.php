@@ -157,6 +157,38 @@ class Request {
     }
 
     /**
+     * Get method as string
+     *
+     * @return string
+     */
+    public function getMethodAsString(): string {
+        if ($this->method === GET::class) {
+            return 'GET';
+        } else if ($this->method === POST::class) {
+            return 'POST';
+        }
+        throw new \Exception('Unkown method exception');
+    }
+
+    /**
+     * Get user agent
+     *
+     * @return string
+     */
+    public function getUserAgent(): string {
+        return $_SERVER['HTTP_USER_AGENT'];
+    }
+
+    /**
+     * Get ip address
+     *
+     * @return string
+     */
+    public function getIp(): string {
+        return $_SERVER['REMOTE_ADDR'];
+    }
+
+    /**
      * Set query params
      *
      * @param array $queryParams

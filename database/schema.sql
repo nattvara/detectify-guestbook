@@ -60,6 +60,27 @@ CREATE TABLE `messages` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `requests`
+--
+
+DROP TABLE IF EXISTS `requests`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `requests` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) unsigned DEFAULT NULL,
+  `request` varchar(128) NOT NULL DEFAULT '',
+  `request_time` int(11) unsigned NOT NULL COMMENT 'milliseconds',
+  `response` varchar(128) NOT NULL DEFAULT '',
+  `exception` varchar(128) DEFAULT NULL,
+  `user_agent` varchar(256) NOT NULL DEFAULT '',
+  `ip` varchar(16) NOT NULL DEFAULT '',
+  `requested_at` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `users`
 --
 
@@ -108,4 +129,4 @@ CREATE TABLE `votes` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-01-07 17:58:43
+-- Dump completed on 2019-01-07 23:18:05
