@@ -13,8 +13,9 @@ namespace Guestbook\Models;
 use Guestbook\Helpers\Database;
 use Guestbook\Models\Exceptions\MessageNotFoundException;
 use Guestbook\Models\Exceptions\ReplyDepthException;
-use \PDO;
+use Guestbook\Models\Exceptions\VotingException;
 use \DateTime;
+use \PDO;
 
 class Message {
 
@@ -57,6 +58,16 @@ class Message {
      * @var DateTime
      */
     private $createdAt;
+
+    /**
+     * @var int
+     */
+    private $upvotes;
+
+    /**
+     * @var int
+     */
+    private $downvotes;
 
     /**
      * @var PDO
@@ -360,6 +371,149 @@ class Message {
     }
 
     /**
+     * Upvote message
+     *
+     * @param  User   $voter
+     * @return void
+     */
+    public function upvote(User $voter) {
+        $this->removeVoteIfCast($voter);
+        $this->castVote($voter, 1);
+    }
+
+    /**
+     * Downvote message
+     *
+     * @param  User   $voter
+     * @return void
+     */
+    public function downvote(User $voter) {
+        $this->removeVoteIfCast($voter);
+        $this->castVote($voter, 0);
+    }
+
+    /**
+     * Cast a vote on the message
+     *
+     * @param  User   $voter
+     * @param  int    $sentiment 1 for upvote 0 for downvote
+     * @return void
+     */
+    private function castVote(User $voter, int $sentiment) {
+        if ($this->getAuthor()->getId() === $voter->getId()) {
+            throw new VotingException('user cannot vote on their own messages');
+        }
+        $stmt = $this->db->prepare('
+            INSERT INTO `votes` (`message_id`, `cast_by`, `sentiment`, `cast_at`)
+            VALUES (:message_id, :cast_by, :sentiment, NOW());
+        ');
+        $stmt->execute([
+            'message_id'    => $this->id,
+            'cast_by'       => $voter->getId(),
+            'sentiment'     => $sentiment
+        ]);
+        if ($sentiment) {
+            $this->upvotes++;
+        } else {
+            $this->downvotes++;
+        }
+    }
+
+    /**
+     * Remove vote cast on message if cast by user
+     *
+     * @param  User   $voter
+     * @return void
+     */
+    private function removeVoteIfCast(User $voter) {
+        $stmt = $this->db->prepare('
+            DELETE FROM `votes`
+            WHERE `message_id` = :message_id
+            AND `cast_by` = :cast_by;
+        ');
+        $stmt->execute([
+            'message_id'    => $this->id,
+            'cast_by'       => $voter->getId(),
+        ]);
+        $this->fetchVotes();
+    }
+
+    /**
+     * Get upvotes
+     *
+     * @return int
+     */
+    public function getUpvotes(): int {
+        if (!$this->upvotes) {
+            $this->fetchVotes();
+        }
+        return $this->upvotes;
+    }
+
+    /**
+     * Get downvotes
+     *
+     * @return int
+     */
+    public function getDownvotes(): int {
+        if (!$this->downvotes) {
+            $this->fetchVotes();
+        }
+        return $this->downvotes;
+    }
+
+    /**
+     * Fetch vote count
+     *
+     * @return void
+     */
+    private function fetchVotes() {
+
+        $sql = '
+            SELECT COUNT(*) AS `votes`
+            FROM `votes`
+            WHERE `message_id` = :id
+            AND `sentiment` = :sentiment;
+        ';
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(['id' => $this->id, 'sentiment' => 1]);
+        $this->upvotes = (int) $stmt->fetch()['votes'];
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(['id' => $this->id, 'sentiment' => 0]);
+        $this->downvotes = (int) $stmt->fetch()['votes'];
+    }
+
+    /**
+     * Get value of vote by user if cast
+     *
+     * Returns null if user haven't cast a vote
+     *
+     * @param  User   $voter
+     * @return string|null
+     */
+    public function getVote(User $voter): ?string {
+        $stmt = $this->db->prepare('
+            SELECT `sentiment` FROM `votes`
+            WHERE `message_id` = :message_id
+            AND `cast_by` = :cast_by;
+        ');
+        $stmt->execute([
+            'message_id'    => $this->id,
+            'cast_by'       => $voter->getId(),
+        ]);
+        $row = $stmt->fetch();
+        if (!$row) {
+            return null;
+        }
+        if ((int) $row['sentiment']) {
+            return 'up';
+        }
+        return 'down';
+    }
+
+    /**
      * Load dependencies
      *
      * Call this method to make sure all dependent models have been loaded,
@@ -376,9 +530,10 @@ class Message {
     /**
      * Format message data for frontend clients to consume
      *
+     * @param  User $user optional, used for checking if user have cast a vote on message
      * @return array
      */
-    public function formatForClient(): array {
+    public function formatForClient(?User $user = null): array {
         return [
             'id'            => $this->getPublicId(),
             'author'        => $this->getAuthor()->getName(),
@@ -386,6 +541,11 @@ class Message {
             'parent_id'     => $this->hasParentMessage() ? $this->getParentMessage()->getPublicId() : null,
             'text'          => $this->getText(),
             'created_at'    => $this->getCreatedAt()->format(DateTime::ISO8601),
+            'votes'         => [
+                'my_vote'   => $user ? $this->getVote($user) : null,
+                'up'        => $this->getUpvotes(),
+                'down'      => $this->getDownvotes(),
+            ]
         ];
     }
 

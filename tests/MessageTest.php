@@ -11,6 +11,7 @@
 namespace Tests;
 
 use Guestbook\Models\Exceptions\ReplyDepthException;
+use Guestbook\Models\Exceptions\VotingException;
 use Guestbook\Models\Message;
 use Guestbook\Models\User;
 use Tests\TestCaseWithDB;
@@ -101,6 +102,101 @@ class MessageTest extends TestCaseWithDB {
             );
             $this->assertMessageCount($i + 1); // Replies + root message
         }
+
+    }
+
+    /**
+     * Test message can be upvoted
+     *
+     * @return void
+     */
+    public function test_message_can_be_upvoted() {
+
+        $user = User::create('bar@email.com', 'secret', 'Jane Doe');
+        $this->message->upvote($user);
+        $this->assertEquals(1, $this->message->getUpvotes());
+
+    }
+
+    /**
+     * Test message can be downvoted
+     *
+     * @return void
+     */
+    public function test_message_can_be_downvoted() {
+
+        $user = User::create('bar@email.com', 'secret', 'Jane Doe');
+        $this->message->downvote($user);
+        $this->assertEquals(1, $this->message->getDownvotes());
+
+    }
+
+    /**
+     * Test message can only be voted on once
+     *
+     * @return void
+     */
+    public function test_message_can_only_be_voted_on_once() {
+
+        $user = User::create('bar@email.com', 'secret', 'Jane Doe');
+        $this->message->upvote($user);
+        $this->message->upvote($user);
+        $this->assertEquals(1, $this->message->getUpvotes());
+
+        $this->message->downvote($user);
+        $this->message->downvote($user);
+        $this->assertEquals(1, $this->message->getDownvotes());
+
+    }
+
+    /**
+     * Test user cannot both up- and downvote
+     *
+     * @return void
+     */
+    public function test_user_cannot_both_upvote_and_downvote() {
+
+        $user = User::create('bar@email.com', 'secret', 'Jane Doe');
+        $this->message->upvote($user);
+        $this->message->downvote($user);
+        $this->assertEquals(0, $this->message->getUpvotes());
+        $this->assertEquals(1, $this->message->getDownvotes());
+
+        $this->message->downvote($user);
+        $this->message->upvote($user);
+        $this->assertEquals(1, $this->message->getUpvotes());
+        $this->assertEquals(0, $this->message->getDownvotes());
+
+    }
+
+    /**
+     * Test users vote can be retrieved
+     *
+     * @return void
+     */
+    public function test_users_vote_can_be_retrieved() {
+
+        $user = User::create('bar@email.com', 'secret', 'Jane Doe');
+
+        $this->assertNull($this->message->getVote($user));
+
+        $this->message->upvote($user);
+        $this->assertEquals('up', $this->message->getVote($user));
+
+        $this->message->downvote($user);
+        $this->assertEquals('down', $this->message->getVote($user));
+
+    }
+
+    /**
+     * Test user cannot vote on their own message
+     *
+     * @return void
+     */
+    public function test_user_cannot_vote_on_their_own_messages() {
+
+        $this->expectException(VotingException::class);
+        $this->message->upvote($this->user);
 
     }
 }
