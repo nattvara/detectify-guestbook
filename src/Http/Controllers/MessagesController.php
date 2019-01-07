@@ -26,7 +26,11 @@ class MessagesController extends Controller {
     public function all(Request $request): JsonResponse {
         $messages = Message::all();
         foreach ($messages as $key => $message) {
-            $messages[$key] = $message->formatForClient($request->user());
+            if ($request->hasAuthenticatedUser()) {
+                $messages[$key] = $message->formatForClient($request->user());
+            } else {
+                $messages[$key] = $message->formatForClient();
+            }
         }
         return new JsonResponse([
             'messages'      => $messages,
