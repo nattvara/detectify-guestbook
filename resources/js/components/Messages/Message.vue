@@ -175,6 +175,10 @@
              * @return {void}
              */
             async vote(sentiment) {
+                if (!this.loggedIn()) {
+                    this.alertError('You need to login to vote', 'info');
+                    return;
+                }
                 try {
                     let url             = '/messages/' + this.id + '/vote/' + sentiment;
                     var response        = await axios.post(url);
