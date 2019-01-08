@@ -346,7 +346,15 @@ class Request {
      */
     public function addCookie(Cookie $cookie) {
         $time = time() + (10 * 365 * 24 * 60 * 60); // 10 years
-        setcookie('token', $cookie->getToken(), $time, null, null, false, true);
+        setcookie(
+            'token',
+            $cookie->getToken(),
+            $time,
+            null,
+            null,
+            getenv('env') === 'development' ? false : true,
+            true
+        );
     }
 
     /**
@@ -372,9 +380,9 @@ class Request {
         if (!isset($_COOKIE['token'])) {
             return;
         }
-        $token  = $_COOKIE['token'];
+        $token = $_COOKIE['token'];
         try {
-            $user   = User::findByCookieToken($token);
+            $user = User::findByCookieToken($token);
             $user->signIn($this, false);
         } catch (UserNotFoundException $e) {
             $this->clearCookies();
@@ -390,6 +398,8 @@ class Request {
         try {
             $this->user();
         } catch (UnauthenticatedException $e) {
+            return;
+        } catch (UserNotFoundException $e) {
             return;
         }
     }

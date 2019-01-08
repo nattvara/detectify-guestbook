@@ -12,6 +12,7 @@ namespace Guestbook\Http\Controllers;
 
 use Guestbook\Http\Request;
 use Guestbook\Http\Responses\JsonResponse;
+use Guestbook\Models\Exceptions\ReplyDepthException;
 use Guestbook\Models\Exceptions\VotingException;
 use Guestbook\Models\Message;
 
@@ -24,19 +25,100 @@ class MessagesController extends Controller {
      * @return JsonResponse
      */
     public function all(Request $request): JsonResponse {
+
         $messages = Message::all();
-        foreach ($messages as $key => $message) {
+        return MessagesController::formatMessages($request, $messages);
+
+    }
+
+    /**
+     * Format messages
+     *
+     * @param  Request      $request
+     * @param  array        $messages
+     * @param  Message|null $startAt
+     * @return JsonResponse
+     */
+    public static function formatMessages(Request $request, array $messages, ?Message $startAt = null): JsonResponse {
+
+        $out = [];
+
+        /**
+         * Format message for output to client
+         *
+         * @param Message $message
+         * @return array
+         */
+        $format = function(Message $message) use (&$request): array {
             if ($request->hasAuthenticatedUser()) {
-                $messages[$key] = $message->formatForClient($request->user());
+                return $message->formatForClient($request->user());
             } else {
-                $messages[$key] = $message->formatForClient();
+                return $message->formatForClient();
+            }
+        };
+
+        /**
+         * Add message to output
+         *
+         * @param Message $message
+         * @return void
+         */
+        $add = function(Message $message, int $key) use (&$out, &$messages, $format) {
+            $out[] = $format($message);
+            unset($messages[$key]);
+        };
+
+        /**
+         * Recursively add message to correct parent in output
+         *
+         * @param Message $message
+         * @param array   $messages
+         * @return array
+         */
+        $recursiveAdd = function(Message $message, array $messages) use ($format, &$recursiveAdd) {
+            $inserted = false;
+            foreach ($messages as $key => $msg) {
+                if ($msg['id'] === $message->getParentMessage()->getPublicId()) {
+                    $inserted = true;
+                    $messages[$key]['children'][] = $format($message);
+                    break;
+                }
+                $res                        = $recursiveAdd($message, $msg['children']);
+                $messages[$key]['children'] = $res['out'];
+                $inserted                   = $res['inserted'];
+                if ($inserted) {
+                    break;
+                }
+            }
+            return ['out' => $messages, 'inserted' => $inserted];
+        };
+
+        foreach ($messages as $key => $message) {
+            if (!$message->hasParentMessage()) {
+                $add($message, $key);
+            }
+            if ($startAt && empty($out)) {
+                if ($message->getId() === $startAt->getId()) {
+                    $add($message, $key);
+                }
             }
         }
+        while (!empty($messages)) {
+            foreach ($messages as $key => $message) {
+                $res = $recursiveAdd($message, $out);
+                $out = $res['out'];
+                if ($res['inserted']) {
+                    unset($messages[$key]);
+                }
+            }
+        }
+
         return new JsonResponse([
-            'messages'      => $messages,
+            'messages'      => $out,
             'message'       => '',
             'status_code'   => 200,
         ]);
+
     }
 
     /**
@@ -121,8 +203,16 @@ class MessagesController extends Controller {
             ]))->withStatusCode(400);
         }
 
-        $parent     = Message::findByPublicId($request->urlVariable('id'));
-        $message    = Message::create($request->input('text'), $request->user(), $parent);
+        try {
+            $parent     = Message::findByPublicId($request->urlVariable('id'));
+            $message    = Message::create($request->input('text'), $request->user(), $parent);
+        } catch (ReplyDepthException $e) {
+            return (new JsonResponse([
+                'status_code'   => 400,
+                'message'       => sprintf('Maximum number of replies exceeded (depth: %d), maybe start a new thread instead.', getenv('message_reply_limit')),
+                'errors'        => []
+            ]))->withStatusCode(400);
+        }
 
         return (new JsonResponse([
             'status_code'   => 201,

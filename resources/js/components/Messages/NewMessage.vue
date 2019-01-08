@@ -91,7 +91,11 @@
                 </el-col>
             </el-row>
         </transition>
-        <el-dialog title="Login" :visible.sync="loginDialog.display" :modal-append-to-body="false" width="70%">
+        <el-dialog
+            title="Login"
+            :visible.sync="loginDialog.display"
+            :modal-append-to-body="false"
+            :width="onMobile() ? '90%' : '70%'">
             <login-register
                 size="large"
                 :show-cancel="false"
@@ -146,6 +150,10 @@
             showCancel: {
                 type: Boolean,
                 default: false
+            },
+            loadedAt: {
+                type: Number,
+                default: 0
             }
         },
 
@@ -165,6 +173,17 @@
          */
         mounted() {
             this.messageForm.show = true;
+        },
+
+        /**
+         * Watchers
+         *
+         * @type {Object}
+         */
+        watch: {
+            loadedAt(val) {
+                this.messageForm.loading = false;
+            }
         },
 
         /**
@@ -233,7 +252,6 @@
                         }
                         this.messageForm.errors[error.field] += error.human_friendly;
                     }
-                } finally {
                     this.messageForm.loading = false;
                 }
             },

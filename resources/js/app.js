@@ -17,29 +17,27 @@ if (csrf) {
     window.axios.defaults.headers.common['X-CSRF-TOKEN'] = csrf.content;
 }
 
-
 import Vue from 'vue';
 
 // Element UI
 import Element from 'element-ui'
 import locale from 'element-ui/lib/locale/lang/en'
-Vue.use(Element, { locale })
+Vue.use(Element, { locale });
 
 // Font Awesome
 import { library } from '@fortawesome/fontawesome-svg-core'
-import {
-    faReply,
-    faShareAlt
-} from '@fortawesome/free-solid-svg-icons'
+import { faReply, faShareAlt } from '@fortawesome/free-solid-svg-icons'
+import { faGithub, faYoutube } from '@fortawesome/free-brands-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-library.add(faReply)
-library.add(faShareAlt)
-Vue.component('font-awesome-icon', FontAwesomeIcon)
+library.add(faReply);
+library.add(faShareAlt);
+library.add(faGithub);
+library.add(faYoutube);
+Vue.component('font-awesome-icon', FontAwesomeIcon);
 
 // vue-scrollto
 import VueScrollTo from 'vue-scrollto'
-Vue.use(VueScrollTo)
-
+Vue.use(VueScrollTo);
 
 // nattvara/detectify-guestbook components
 Vue.component('page', require('./components/Page/Main.vue').default);
@@ -49,6 +47,11 @@ Vue.component('huge', require('./components/Text/Huge.vue').default);
 Vue.component('medium', require('./components/Text/Medium.vue').default);
 
 Vue.mixin({
+    data() {
+        return {
+            mobile: null
+        };
+    },
     methods: {
 
         /**
@@ -101,9 +104,23 @@ Vue.mixin({
                 showClose: showClose
             });
         },
+
+        /**
+         * If on a mobile device
+         *
+         * @return {Boolean}
+         */
+        onMobile() {
+            if (!this.mobile) {
+                this.mobile = window.innerWidth <= 699;
+                setInterval(() => {
+                    this.mobile = window.innerWidth <= 699;
+                }, 2000);
+            }
+            return this.mobile;
+        }
     }
 });
-
 
 new Vue({
     el: '#app'
