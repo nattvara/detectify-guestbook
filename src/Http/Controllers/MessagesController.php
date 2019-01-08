@@ -89,7 +89,7 @@ class MessagesController extends Controller {
             if (!$message->hasParentMessage()) {
                 $add($message, $key);
             }
-            if ($startAt) {
+            if ($startAt && empty($out)) {
                 if ($message->getId() === $startAt->getId()) {
                     $add($message, $key);
                 }
