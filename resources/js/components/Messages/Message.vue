@@ -85,6 +85,7 @@
                     :votes="message.votes"
                     :created-at="message.created_at"
                     :children="message.children"
+                    :loaded-at="loadedAt"
                     @reload-messages="$emit('reload-messages');"
                     ></message>
             </div>
@@ -93,6 +94,7 @@
                 <new-message
                     :reply-to="this.id"
                     :show-cancel="true"
+                    :loaded-at="loadedAt"
                     @cancel="replyForm.show = false;"></new-message>
             </el-row>
         </el-card>
@@ -132,6 +134,7 @@
             isRoot: Boolean,
             children: Array,
             authorId: String,
+            loadedAt: Number,
             parentId: String,
             createdAt: String,
         },

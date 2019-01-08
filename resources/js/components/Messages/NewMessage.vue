@@ -146,6 +146,10 @@
             showCancel: {
                 type: Boolean,
                 default: false
+            },
+            loadedAt: {
+                type: Number,
+                default: 0
             }
         },
 
@@ -165,6 +169,17 @@
          */
         mounted() {
             this.messageForm.show = true;
+        },
+
+        /**
+         * Watchers
+         *
+         * @type {Object}
+         */
+        watch: {
+            loadedAt(val) {
+                this.messageForm.loading = false;
+            }
         },
 
         /**
@@ -233,7 +248,6 @@
                         }
                         this.messageForm.errors[error.field] += error.human_friendly;
                     }
-                } finally {
                     this.messageForm.loading = false;
                 }
             },

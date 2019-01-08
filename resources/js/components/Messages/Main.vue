@@ -23,10 +23,14 @@
             :votes="message.votes"
             :created-at="message.created_at"
             :children="message.children"
+            :loaded-at="fetchedAt"
             @reload-messages="fetch();"
             ></message>
 
-        <new-message class="new" @reload-messages="fetch();" v-if="rootId === ''"></new-message>
+        <new-message
+            class="new"
+            :loaded-at="fetchedAt"
+            @reload-messages="fetch();" v-if="rootId === ''"></new-message>
     </div>
 </template>
 
@@ -66,7 +70,8 @@
             return {
                 messages: [],
                 loading: false,
-                firstLoad: false
+                firstLoad: false,
+                fetchedAt: 0
             };
         },
 
@@ -110,7 +115,8 @@
                 } catch (e) {
                     this.alertError('Failed to load messages');
                 } finally {
-                    this.loading = false;
+                    this.fetchedAt  = (new Date()).getTime();
+                    this.loading    = false;
                 }
             }
 
