@@ -203,8 +203,16 @@ class MessagesController extends Controller {
             ]))->withStatusCode(400);
         }
 
-        $parent     = Message::findByPublicId($request->urlVariable('id'));
-        $message    = Message::create($request->input('text'), $request->user(), $parent);
+        try {
+            $parent     = Message::findByPublicId($request->urlVariable('id'));
+            $message    = Message::create($request->input('text'), $request->user(), $parent);
+        } catch (ReplyDepthException $e) {
+            return (new JsonResponse([
+                'status_code'   => 400,
+                'message'       => sprintf('Maximum number of replies exceeded (depth: %d), maybe start a new thread instead.', getenv('message_reply_limit')),
+                'errors'        => []
+            ]))->withStatusCode(400);
+        }
 
         return (new JsonResponse([
             'status_code'   => 201,
