@@ -8,6 +8,11 @@
         width: 100%;
         z-index: 2;
         padding: 0px 20px;
+
+
+        @media only screen and (max-width: $mobile-break) {
+            padding: 0px;
+        }
     }
 
     .el-header {

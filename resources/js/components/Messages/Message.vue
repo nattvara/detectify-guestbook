@@ -10,6 +10,11 @@
         border-left: 6px solid mix($secondary, $primary, 70%);
         border-bottom: 6px solid mix($secondary, $primary, 70%);
         box-shadow: 0px 0px 1px mix(mix($secondary, $primary, 70%), #000, 80%);
+
+        @media only screen and (max-width: $mobile-break) {
+            margin: 10px 3px 0px 3px;
+            box-shadow: 0 2px 5px 0 mix(mix($secondary, $primary, 70%), #000, 80%);
+        }
     }
 
     p {
@@ -19,16 +24,28 @@
     .actions {
         margin: 0px 0px 5px 0px;
 
+        @media only screen and (max-width: $mobile-break) {
+            margin: 0px 0px 2px 0px;
+        }
+
         .action {
             float: left;
         }
 
         *.el-button {
             padding: 10px 10px 10px 0px;
+
+            @media only screen and (max-width: $mobile-break) {
+                padding: 5px 5px 5px 0px;
+            }
         }
 
         .el-badge {
             margin-right: 30px;
+
+            @media only screen and (max-width: $mobile-break) {
+                margin-right: 10px;
+            }
 
             &.voted {
                 .el-button {
