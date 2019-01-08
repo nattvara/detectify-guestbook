@@ -12,6 +12,7 @@ namespace Guestbook\Http\Controllers;
 
 use Guestbook\Http\Request;
 use Guestbook\Http\Responses\JsonResponse;
+use Guestbook\Models\Exceptions\ReplyDepthException;
 use Guestbook\Models\Exceptions\VotingException;
 use Guestbook\Models\Message;
 
@@ -75,14 +76,21 @@ class MessagesController extends Controller {
          * @return array
          */
         $recursiveAdd = function(Message $message, array $messages) use ($format, &$recursiveAdd) {
+            $inserted = false;
             foreach ($messages as $key => $msg) {
                 if ($msg['id'] === $message->getParentMessage()->getPublicId()) {
+                    $inserted = true;
                     $messages[$key]['children'][] = $format($message);
                     break;
                 }
-                $messages[$key]['children'] = $recursiveAdd($message, $msg['children']);
+                $res                        = $recursiveAdd($message, $msg['children']);
+                $messages[$key]['children'] = $res['out'];
+                $inserted                   = $res['inserted'];
+                if ($inserted) {
+                    break;
+                }
             }
-            return $messages;
+            return ['out' => $messages, 'inserted' => $inserted];
         };
 
         foreach ($messages as $key => $message) {
@@ -95,11 +103,13 @@ class MessagesController extends Controller {
                 }
             }
         }
-
         while (!empty($messages)) {
             foreach ($messages as $key => $message) {
-                $out = $recursiveAdd($message, $out);
-                unset($messages[$key]);
+                $res = $recursiveAdd($message, $out);
+                $out = $res['out'];
+                if ($res['inserted']) {
+                    unset($messages[$key]);
+                }
             }
         }
 
