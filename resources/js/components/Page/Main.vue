@@ -82,6 +82,11 @@
                         Source Code <font-awesome-icon :icon="['fab', 'github']" />
                     </a>
                 </p>
+                <p>
+                    <a href="https://www.youtube.com/PewDiePie" target="_blank">
+                        You should also subscribe to pewdiepie <font-awesome-icon :icon="['fab', 'youtube']" />
+                    </a>
+                </p>
             </div>
         </el-footer>
     </el-container>

@@ -27,15 +27,13 @@ Vue.use(Element, { locale });
 
 // Font Awesome
 import { library } from '@fortawesome/fontawesome-svg-core'
-import {
-    faReply,
-    faShareAlt,
-} from '@fortawesome/free-solid-svg-icons'
-import { faGithub } from '@fortawesome/free-brands-svg-icons'
+import { faReply, faShareAlt } from '@fortawesome/free-solid-svg-icons'
+import { faGithub, faYoutube } from '@fortawesome/free-brands-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 library.add(faReply);
 library.add(faShareAlt);
 library.add(faGithub);
+library.add(faYoutube);
 Vue.component('font-awesome-icon', FontAwesomeIcon);
 
 // vue-scrollto
