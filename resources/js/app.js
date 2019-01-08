@@ -17,7 +17,6 @@ if (csrf) {
     window.axios.defaults.headers.common['X-CSRF-TOKEN'] = csrf.content;
 }
 
-
 import Vue from 'vue';
 
 // Element UI
@@ -39,7 +38,6 @@ Vue.component('font-awesome-icon', FontAwesomeIcon);
 // vue-scrollto
 import VueScrollTo from 'vue-scrollto'
 Vue.use(VueScrollTo);
-
 
 // nattvara/detectify-guestbook components
 Vue.component('page', require('./components/Page/Main.vue').default);
@@ -123,7 +121,6 @@ Vue.mixin({
         }
     }
 });
-
 
 new Vue({
     el: '#app'
