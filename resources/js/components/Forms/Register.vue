@@ -50,7 +50,7 @@
             <el-row>
                 <h2>Register</h2>
             </el-row>
-            <el-row type="flex" :justify="onMobile()">
+            <el-row type="flex" justify="left">
                 <el-form
                     ref="form"
                     status-icon
