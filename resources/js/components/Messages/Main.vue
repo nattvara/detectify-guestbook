@@ -9,6 +9,7 @@
 
 <template>
     <div v-loading.fullscreen.lock="!firstLoad">
+
         <message
             v-for="message in messages"
             v-if="!message.parent_id || rootId == message.id"
@@ -21,8 +22,7 @@
             :text="message.text"
             :votes="message.votes"
             :created-at="message.created_at"
-            :responses="responses"
-            :messages="messages"
+            :children="message.children"
             @reload-messages="fetch();"
             ></message>
 
@@ -112,26 +112,8 @@
                 } finally {
                     this.loading = false;
                 }
-            },
-
-            /**
-             * Get responses from array of messages
-             *
-             * @param  {Array}  messages Array to select from
-             * @param  {String} parentId Parent messages should be in response to
-             * @return {Array}
-             */
-            responses(messages, parentId) {
-                var responses = [];
-                for (var i = 0; i < messages.length; i++) {
-                    if (messages[i].parent_id === parentId) {
-                        responses.push(messages[i]);
-                    }
-                }
-                return responses;
             }
 
         }
-
     }
 </script>

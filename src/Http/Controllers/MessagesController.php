@@ -24,19 +24,91 @@ class MessagesController extends Controller {
      * @return JsonResponse
      */
     public function all(Request $request): JsonResponse {
+
         $messages = Message::all();
-        foreach ($messages as $key => $message) {
+        return MessagesController::formatMessages($request, $messages);
+
+    }
+
+    /**
+     * Format messages
+     *
+     * @param  Request      $request
+     * @param  array        $messages
+     * @param  Message|null $startAt
+     * @return JsonResponse
+     */
+    public static function formatMessages(Request $request, array $messages, ?Message $startAt = null): JsonResponse {
+
+        $out = [];
+
+        /**
+         * Format message for output to client
+         *
+         * @param Message $message
+         * @return array
+         */
+        $format = function(Message $message) use (&$request): array {
             if ($request->hasAuthenticatedUser()) {
-                $messages[$key] = $message->formatForClient($request->user());
+                return $message->formatForClient($request->user());
             } else {
-                $messages[$key] = $message->formatForClient();
+                return $message->formatForClient();
+            }
+        };
+
+        /**
+         * Add message to output
+         *
+         * @param Message $message
+         * @return void
+         */
+        $add = function(Message $message, int $key) use (&$out, &$messages, $format) {
+            $out[] = $format($message);
+            unset($messages[$key]);
+        };
+
+        /**
+         * Recursively add message to correct parent in output
+         *
+         * @param Message $message
+         * @param array   $messages
+         * @return array
+         */
+        $recursiveAdd = function(Message $message, array $messages) use ($format, &$recursiveAdd) {
+            foreach ($messages as $key => $msg) {
+                if ($msg['id'] === $message->getParentMessage()->getPublicId()) {
+                    $messages[$key]['children'][] = $format($message);
+                    break;
+                }
+                $messages[$key]['children'] = $recursiveAdd($message, $msg['children']);
+            }
+            return $messages;
+        };
+
+        foreach ($messages as $key => $message) {
+            if (!$message->hasParentMessage()) {
+                $add($message, $key);
+            }
+            if ($startAt) {
+                if ($message->getId() === $startAt->getId()) {
+                    $add($message, $key);
+                }
             }
         }
+
+        while (!empty($messages)) {
+            foreach ($messages as $key => $message) {
+                $out = $recursiveAdd($message, $out);
+                unset($messages[$key]);
+            }
+        }
+
         return new JsonResponse([
-            'messages'      => $messages,
+            'messages'      => $out,
             'message'       => '',
             'status_code'   => 200,
         ]);
+
     }
 
     /**

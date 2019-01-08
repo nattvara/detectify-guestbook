@@ -73,7 +73,7 @@
 
             <div>
                 <message
-                    v-for="message in responses(messages, parentId)"
+                    v-for="message in children"
                     v-if="message.parent_id === parentId"
                     :key="message.id"
                     :id="message.id"
@@ -84,8 +84,7 @@
                     :text="message.text"
                     :votes="message.votes"
                     :created-at="message.created_at"
-                    :responses="responses"
-                    :messages="messages"
+                    :children="message.children"
                     @reload-messages="$emit('reload-messages');"
                     ></message>
             </div>
@@ -131,11 +130,10 @@
             votes: Object,
             author: String,
             isRoot: Boolean,
-            messages: Array,
+            children: Array,
             authorId: String,
             parentId: String,
             createdAt: String,
-            responses: Function
         },
 
         /**

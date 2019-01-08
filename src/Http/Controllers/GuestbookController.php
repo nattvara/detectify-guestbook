@@ -65,18 +65,8 @@ class GuestbookController extends Controller {
             ]))->withCsrfToken($request);
         }
 
-        foreach (Message::findAllStartingAtMessage($message) as $key => $message) {
-            if ($request->hasAuthenticatedUser()) {
-                $messages[$key] = $message->formatForClient($request->user());
-            } else {
-                $messages[$key] = $message->formatForClient();
-            }
-        }
+        $messages = Message::findAllStartingAtMessage($message);
+        return MessagesController::formatMessages($request, $messages, $message);
 
-        return new JsonResponse([
-            'messages'      => $messages,
-            'message'       => '',
-            'status_code'   => 200,
-        ]);
     }
 }
