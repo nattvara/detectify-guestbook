@@ -11,10 +11,12 @@
 
 body, p, a, h1, h2, h3, h4, h5, textarea {
     font-family: $font, serif;
+    padding: 0;
 }
 
 body {
     background: $primary;
+    margin: 0;
 }
 
 .message.el-card > .el-card__body {

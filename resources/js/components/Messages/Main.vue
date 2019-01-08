@@ -1,5 +1,10 @@
 <style lang="scss" scoped>
     @import '~@/variables';
+
+    .new {
+        margin-top: 20px;
+    }
+
 </style>
 
 <template>
@@ -21,7 +26,7 @@
             @reload-messages="fetch();"
             ></message>
 
-        <new-message @reload-messages="fetch();" v-if="rootId === ''"></new-message>
+        <new-message class="new" @reload-messages="fetch();" v-if="rootId === ''"></new-message>
     </div>
 </template>
 
