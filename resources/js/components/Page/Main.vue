@@ -20,6 +20,10 @@
         z-index: 1;
         padding: 10px;
         margin-bottom: 30px;
+
+        @media only screen and (max-width: $mobile-break) {
+            margin-bottom: 90px;
+        }
     }
 
     .el-footer {

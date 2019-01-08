@@ -52,6 +52,10 @@ textarea {
 
 .el-dialog {
     max-width: 300px;
+
+    @media only screen and (max-width: $mobile-break) {
+        max-width: 100%;
+    }
 }
 
 input, label, button {

@@ -91,7 +91,11 @@
                 </el-col>
             </el-row>
         </transition>
-        <el-dialog title="Login" :visible.sync="loginDialog.display" :modal-append-to-body="false" width="70%">
+        <el-dialog
+            title="Login"
+            :visible.sync="loginDialog.display"
+            :modal-append-to-body="false"
+            :width="onMobile() ? '90%' : '70%'">
             <login-register
                 size="large"
                 :show-cancel="false"

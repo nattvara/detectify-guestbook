@@ -49,6 +49,11 @@ Vue.component('huge', require('./components/Text/Huge.vue').default);
 Vue.component('medium', require('./components/Text/Medium.vue').default);
 
 Vue.mixin({
+    data() {
+        return {
+            mobile: null
+        };
+    },
     methods: {
 
         /**
@@ -101,6 +106,21 @@ Vue.mixin({
                 showClose: showClose
             });
         },
+
+        /**
+         * If on a mobile device
+         *
+         * @return {Boolean}
+         */
+        onMobile() {
+            if (!this.mobile) {
+                this.mobile = window.innerWidth <= 699;
+                setInterval(() => {
+                    this.mobile = window.innerWidth <= 699;
+                }, 2000);
+            }
+            return this.mobile;
+        }
     }
 });
 
