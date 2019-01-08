@@ -127,6 +127,9 @@ class Router {
                 return (new HtmlResponse('error.html', ['reason' => 'Please reload the page and try again (CSRF Token)']))->withStatusCode(500);
             },
             'general' => function(Throwable $t) use ($request) {
+                if (getenv('env') === 'development') {
+                    throw $t;
+                }
                 $request->wasThrownWith($t);
                 if ($request->isJson()) {
                     return (new JsonResponse([
