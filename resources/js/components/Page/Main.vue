@@ -12,6 +12,7 @@
 
         @media only screen and (max-width: $mobile-break) {
             padding: 0px;
+            min-height: 200px;
         }
     }
 

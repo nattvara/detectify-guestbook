@@ -6,6 +6,10 @@
         text-align: center;
         font-size: 60px;
         margin: 0;
+
+        @media only screen and (max-width: $mobile-break) {
+            font-size: 40px;
+        }
     }
 
 </style>

@@ -5,6 +5,12 @@
         margin-top: 20px;
     }
 
+    div {
+        @media only screen and (max-width: $mobile-break) {
+            margin-left: 1px;
+        }
+    }
+
 </style>
 
 <template>
