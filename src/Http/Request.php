@@ -346,7 +346,15 @@ class Request {
      */
     public function addCookie(Cookie $cookie) {
         $time = time() + (10 * 365 * 24 * 60 * 60); // 10 years
-        setcookie('token', $cookie->getToken(), $time, null, null, false, true);
+        setcookie(
+            'token',
+            $cookie->getToken(),
+            $time,
+            null,
+            null,
+            getenv('env') === 'development' ? false : true,
+            true
+        );
     }
 
     /**
