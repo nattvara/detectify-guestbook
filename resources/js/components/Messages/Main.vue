@@ -42,7 +42,7 @@
 
 <script>
     import Message from './Message'
-    import NewMessage from './NewMessage'
+    import NewMessage from './../Forms/NewMessage'
     export default {
 
         /**
