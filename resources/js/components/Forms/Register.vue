@@ -3,21 +3,50 @@
 
     h2 {
         font-size: 40px;
+
+        @media only screen and (max-width: $mobile-break) {
+            margin-top: -10px;
+        }
+    }
+
+    .form {
+        @media only screen and (max-width: $mobile-break) {
+            padding: 2px;
+        }
     }
 
     .el-form {
         width: 100%;
     }
 
+    .el-form-item {
+        @media only screen and (max-width: $mobile-break) {
+            padding: 2px 10px;
+        }
+    }
+
+    .btn-row {
+        @media only screen and (max-width: $mobile-break) {
+            text-align: center;
+        }
+    }
+
     .el-button {
         margin-top: 50px;
+
+        @media only screen and (max-width: $mobile-break) {
+            margin-top: 10px;
+            width: 30%;
+            margin: auto;
+            float: unset;
+        }
     }
 
 </style>
 
 <template>
     <transition name="el-fade-in">
-        <div v-show="registerForm.show">
+        <div v-show="registerForm.show" class="form">
             <el-row>
                 <h2>Register</h2>
             </el-row>
@@ -28,32 +57,59 @@
                     :model="registerForm.form"
                     :rules="registerForm.rules"
                     size="large">
-                    <el-row>
+
+                    <!-- Desktop -->
+                    <el-row v-if="!onMobile()">
                         <el-col :span="8">
                             <el-form-item prop="email" label="Email" :error="registerForm.errors.email">
-                                <el-input type="email" v-model="registerForm.form.email" placeholder="name@example.com"></el-input>
+                                <el-input type="email" v-model="registerForm.form.email" placeholder="name@example.com" @keyup.enter.native="register();"></el-input>
                             </el-form-item>
                         </el-col>
                         <el-col :span="8" :offset="1">
                             <el-form-item prop="name" label="Full Name" :error="registerForm.errors.name">
-                                <el-input type="text" v-model="registerForm.form.name" placeholder="John Doe"></el-input>
+                                <el-input type="text" v-model="registerForm.form.name" placeholder="John Doe" @keyup.enter.native="register();"></el-input>
                             </el-form-item>
                         </el-col>
                     </el-row>
-                    <el-row>
+                    <el-row v-if="!onMobile()">
                         <el-col :span="8">
                             <el-form-item prop="password" label="Password" :error="registerForm.errors.password">
-                                <el-input type="password" v-model="registerForm.form.password" autocomplete="off" placeholder="Just not 'password123'"></el-input>
+                                <el-input type="password" v-model="registerForm.form.password" autocomplete="off" placeholder="Just not 'password123'" @keyup.enter.native="register();"></el-input>
                             </el-form-item>
                         </el-col>
                         <el-col :span="8" :offset="1">
                             <el-form-item prop="password_repeat" label="Repeat Password" :error="registerForm.errors.password_repeat">
-                                <el-input type="password" v-model="registerForm.form.password_repeat" autocomplete="off" placeholder="Waaay easier with a password manager"></el-input>
+                                <el-input type="password" v-model="registerForm.form.password_repeat" autocomplete="off" placeholder="Waaay easier with a password manager" @keyup.enter.native="register();"></el-input>
                             </el-form-item>
                         </el-col>
                     </el-row>
+
+                    <!-- Mobile -->
+                    <el-row v-if="onMobile()">
+                        <el-form-item prop="email" label="Email" :error="registerForm.errors.email">
+                            <el-input type="email" v-model="registerForm.form.email" placeholder="name@example.com" @keyup.enter.native="register();"></el-input>
+                        </el-form-item>
+                    </el-row>
+                    <el-row v-if="onMobile()">
+                        <el-form-item prop="name" label="Full Name" :error="registerForm.errors.name">
+                            <el-input type="text" v-model="registerForm.form.name" placeholder="John Doe" @keyup.enter.native="register();"></el-input>
+                        </el-form-item>
+                    </el-row>
+                    <el-row v-if="onMobile()">
+                        <el-form-item prop="password" label="Password" :error="registerForm.errors.password">
+                            <el-input type="password" v-model="registerForm.form.password" autocomplete="off" placeholder="Just not 'password123'" @keyup.enter.native="register();"></el-input>
+                        </el-form-item>
+                    </el-row>
+                    <el-row v-if="onMobile()">
+                        <el-form-item prop="password_repeat" label="Repeat Password" :error="registerForm.errors.password_repeat">
+                            <el-input type="password" v-model="registerForm.form.password_repeat" autocomplete="off" placeholder="Waaay easier with a password manager" @keyup.enter.native="register();"></el-input>
+                        </el-form-item>
+                    </el-row>
+
                     <el-form-item>
-                        <el-button class="submit" type="primary" plain @click="register();">Register</el-button>
+                        <el-row class="btn-row">
+                            <el-button class="submit" type="primary" plain @click="register();">Register</el-button>
+                        </el-row>
                     </el-form-item>
                 </el-form>
             </el-row>

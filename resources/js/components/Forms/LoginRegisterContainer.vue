@@ -23,10 +23,24 @@
                 margin-bottom: 40px;
             }
         }
+
+        @media only screen and (max-width: $mobile-break) {
+            .el-form-item {
+                min-width: 300px;
+                margin: auto;
+                display: block;
+                float: unset;
+                margin-bottom: 35px;
+            }
+        }
     }
 
     .submit {
         margin-top: 4px;
+
+        &.full-width {
+            width: 100%;
+        }
     }
 
 </style>
@@ -48,21 +62,35 @@
             <el-row type="flex" justify="center" v-show="loginForm.show">
                 <el-form
                     ref="form"
-                    :size="size"
+                    :size="onMobile() ? 'large' : size"
                     :model="loginForm.form"
                     :rules="loginForm.rules"
-                    :inline="inline"
+                    :inline="inline && !onMobile()"
                     :class="{'not-inline': !inline}">
                     <el-form-item prop="email" class="login" :error="loginForm.errors.email">
-                        <el-input type="email" v-model="loginForm.form.email" placeholder="Email"></el-input>
+                        <el-input type="email" v-model="loginForm.form.email" placeholder="Email" @keyup.enter.native="attemptLogin();"></el-input>
                     </el-form-item>
                     <el-form-item prop="password" class="login" :error="loginForm.errors.password">
-                        <el-input type="password" v-model="loginForm.form.password" autocomplete="off" placeholder="Password"></el-input>
+                        <el-input type="password" v-model="loginForm.form.password" autocomplete="off" placeholder="Password" @keyup.enter.native="attemptLogin();"></el-input>
                     </el-form-item>
-                    <el-form-item>
-                        <el-button class="submit" type="primary" plain @click="attemptLogin();">Login</el-button>
+                    <el-form-item v-if="!onMobile()">
+                        <el-button class="submit" type="primary" plain @click="attemptLogin();">
+                            <span v-if="!loginForm.loading">Login</span>
+                            <span v-if="loginForm.loading">Logging in...</span>
+                        </el-button>
                         <el-button class="submit" type="secondary" plain @click="hideLoginForm();" v-if="showCancel">Cancel</el-button>
                     </el-form-item>
+                    <el-row v-if="onMobile()" align="center">
+                        <el-col :span="14" :offset="5">
+                            <el-form-item
+                                <el-button :class="{'submit': true, 'full-width': !showCancel}" type="primary" plain @click="attemptLogin();">
+                                    <span v-if="!loginForm.loading">Login</span>
+                                    <span v-if="loginForm.loading">Logging in...</span>
+                                </el-button>
+                                <el-button class="submit" type="secondary" plain @click="hideLoginForm();" v-if="showCancel">Cancel</el-button>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
                 </el-form>
             </el-row>
         </transition>
@@ -107,6 +135,7 @@
                     show: true,
                 },
                 loginForm: {
+                    loading: false,
                     show: false,
                     form: {
                         email: '',
@@ -175,6 +204,7 @@
              * @return {void}
              */
             async attemptLogin() {
+                this.loginForm.loading = true;
                 try {
                     var response = await axios.post('/login', {
                         email: this.loginForm.form.email,
@@ -197,6 +227,8 @@
                         this.alertError(e.response.data.message);
                     }
                     return;
+                } finally {
+                    this.loginForm.loading = false;
                 }
 
                 if (response.data.login) {

@@ -26,7 +26,7 @@ set('shared_files', [
 host('[YOUR HOST NAME]')
     ->stage('production')
     ->user('ubuntu')
-    ->identityFile('~/.ssh/aws/personal-eu-west-1.pem')
+    ->identityFile('[/path/to/.pem]')
     ->set('deploy_path', '/var/www/[YOUR HOST NAME]')
     ->set('branch', 'master');
 

@@ -19,6 +19,7 @@ use Guestbook\Http\Validation\Validation;
 use Guestbook\Models\Cookie;
 use Guestbook\Models\Exceptions\UserNotFoundException;
 use Guestbook\Models\User;
+use \Throwable;
 
 class Request {
 
@@ -68,6 +69,13 @@ class Request {
      * @var User
      */
     private $user;
+
+    /**
+     * Request was thrown with an error
+     *
+     * @var Throwable
+     */
+    private $wasThrown;
 
     /**
      * New Request
@@ -154,6 +162,38 @@ class Request {
      */
     public function getMethod() {
         return $this->method;
+    }
+
+    /**
+     * Get method as string
+     *
+     * @return string
+     */
+    public function getMethodAsString(): string {
+        if ($this->method === GET::class) {
+            return 'GET';
+        } else if ($this->method === POST::class) {
+            return 'POST';
+        }
+        throw new \Exception('Unkown method exception');
+    }
+
+    /**
+     * Get user agent
+     *
+     * @return string
+     */
+    public function getUserAgent(): string {
+        return $_SERVER['HTTP_USER_AGENT'];
+    }
+
+    /**
+     * Get ip address
+     *
+     * @return string
+     */
+    public function getIp(): string {
+        return $_SERVER['REMOTE_ADDR'];
     }
 
     /**
@@ -306,7 +346,15 @@ class Request {
      */
     public function addCookie(Cookie $cookie) {
         $time = time() + (10 * 365 * 24 * 60 * 60); // 10 years
-        setcookie('token', $cookie->getToken(), $time, null, null, false, true);
+        setcookie(
+            'token',
+            $cookie->getToken(),
+            $time,
+            null,
+            null,
+            getenv('env') === 'development' ? false : true,
+            true
+        );
     }
 
     /**
@@ -332,9 +380,9 @@ class Request {
         if (!isset($_COOKIE['token'])) {
             return;
         }
-        $token  = $_COOKIE['token'];
+        $token = $_COOKIE['token'];
         try {
-            $user   = User::findByCookieToken($token);
+            $user = User::findByCookieToken($token);
             $user->signIn($this, false);
         } catch (UserNotFoundException $e) {
             $this->clearCookies();
@@ -350,6 +398,8 @@ class Request {
         try {
             $this->user();
         } catch (UnauthenticatedException $e) {
+            return;
+        } catch (UserNotFoundException $e) {
             return;
         }
     }
@@ -380,6 +430,27 @@ class Request {
             return false;
         }
         return true;
+    }
+
+    /**
+     * Was thrown with
+     *
+     * @param Throwable $throwable
+     * @return void
+     */
+    public function wasThrownWith(Throwable $throwable) {
+        $this->wasThrown = $throwable;
+    }
+
+    /**
+     * Get error for request
+     *
+     * Returns null if no error occured
+     *
+     * @return Throwable|null
+     */
+    public function getError(): ?Throwable {
+        return $this->wasThrown;
     }
 
     /**

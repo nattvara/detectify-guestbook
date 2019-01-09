@@ -15,6 +15,12 @@
         color: $font-color;
     }
 
+    .login {
+        @media only screen and (max-width: $mobile-break) {
+            margin-bottom: 90px;
+        }
+    }
+
     .below_title {
         min-height: 150px;
         margin-bottom: -100px;
@@ -35,7 +41,7 @@
 
         <el-row class="below_title">
 
-            <login-register v-if="!loggedIn() && showLoginRegister"></login-register>
+            <login-register class="login" v-if="!loggedIn() && showLoginRegister"></login-register>
 
             <el-row v-if="loggedIn()" type="flex" justify="center">
                 <div>
