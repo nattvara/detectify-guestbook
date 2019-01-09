@@ -1,6 +1,14 @@
 <style lang="scss" scoped>
     @import '~@/variables';
 
+    .clickable {
+        cursor: pointer;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
     h2 {
         width: 100%;
         text-align: center;
@@ -15,20 +23,20 @@
 </style>
 
 <template>
-    <h2>{{ text }}</h2>
+    <h2 @click="routeIfHref();" :class="{clickable: href !== ''}">{{ text }}</h2>
 </template>
 
 <script>
+    import Text from './Text'
     export default {
 
         /**
-         * Components properties
+         * Mixins
          *
-         * @type {Object}
+         * @type {Array}
          */
-        props: {
-            text: String
-        }
-
+        mixins: [
+            Text
+        ]
     }
 </script>
