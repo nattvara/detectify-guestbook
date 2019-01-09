@@ -134,6 +134,29 @@ php -S localhost:9000 ./public/router.php
 
 ```
 
+#### Run the testsuite
+
+```bash
+
+$ ./vendor/bin/phpunit
+
+```
+
+If database credentials in `phpunit.xml` are not valid and connection is refused, tests that rely on the database will be skipped
+
+```console
+$ ./vendor/bin/phpunit
+PHPUnit 7.5.1 by Sebastian Bergmann and contributors.
+
+....SSSSSSSSSS.........SSSSSSSSSSSSS                              36 / 36 (100%)
+
+Time: 147 ms, Memory: 4.00MB
+
+OK, but incomplete, skipped, or risky tests!
+Tests: 36, Assertions: 15, Skipped: 23.
+
+```
+
 ### Remote Server
 
 > The repo includes an example file for [Deployer](https://github.com/deployphp/deployer). This is configured for an ubuntu server (connecting over SSH using a `.pem` file) with Apache and MySQL installed and a user account `ubuntu` that has write permissions to `/var/www/[YOUR HOST NAME]`
