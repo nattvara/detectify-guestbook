@@ -15,7 +15,7 @@ This is a coding challenge for [Detectify](http://detectify.com/). The challenge
 
 ## Demo
 
-A live demo can be viewed at [https://detectify-guestbook.kristoffersson.org](https://detectify-guestbook.kristoffersson.org){:target="_blank"}
+A live demo can be viewed at [https://detectify-guestbook.kristoffersson.org](https://detectify-guestbook.kristoffersson.org)
 
 ## Features
 
