@@ -34,6 +34,7 @@ function createSchema(PDO $db) {
 }
 
 srand(RANDOM_SEED);
+date_default_timezone_set(getenv('timezone'));
 
 echo('creating db' . PHP_EOL);
 $db = Database::getPDOConnection(false);

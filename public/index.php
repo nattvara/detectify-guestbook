@@ -22,6 +22,7 @@ require_once(__DIR__ . '/../vendor/autoload.php');
 require_once(__DIR__ . '/../.env.php');
 
 define('REQUEST_START', microtime(true));
+date_default_timezone_set(getenv('timezone'));
 
 $request = new Request;
 $request->readPhpGlobals();
