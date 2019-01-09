@@ -1,9 +1,21 @@
 <style lang="scss" scoped>
     @import '~@/variables';
+
+    .new {
+        margin-top: 20px;
+    }
+
+    div {
+        @media only screen and (max-width: $mobile-break) {
+            margin-left: 1px;
+        }
+    }
+
 </style>
 
 <template>
-    <div>
+    <div v-loading.fullscreen.lock="!firstLoad">
+
         <message
             v-for="message in messages"
             v-if="!message.parent_id || rootId == message.id"
@@ -16,18 +28,21 @@
             :text="message.text"
             :votes="message.votes"
             :created-at="message.created_at"
-            :responses="responses"
-            :messages="messages"
+            :children="message.children"
+            :loaded-at="fetchedAt"
             @reload-messages="fetch();"
             ></message>
 
-        <new-message @reload-messages="fetch();" v-if="rootId === ''"></new-message>
+        <new-message
+            class="new"
+            :loaded-at="fetchedAt"
+            @reload-messages="fetch();" v-if="rootId === ''"></new-message>
     </div>
 </template>
 
 <script>
     import Message from './Message'
-    import NewMessage from './NewMessage'
+    import NewMessage from './../Forms/NewMessage'
     export default {
 
         /**
@@ -61,6 +76,8 @@
             return {
                 messages: [],
                 loading: false,
+                firstLoad: false,
+                fetchedAt: 0
             };
         },
 
@@ -72,6 +89,7 @@
         async mounted() {
             while (true) {
                 await this.fetch();
+                this.firstLoad = true;
                 await this.sleep(5000);
             }
         },
@@ -103,28 +121,11 @@
                 } catch (e) {
                     this.alertError('Failed to load messages');
                 } finally {
-                    this.loading = false;
+                    this.fetchedAt  = (new Date()).getTime();
+                    this.loading    = false;
                 }
-            },
-
-            /**
-             * Get responses from array of messages
-             *
-             * @param  {Array}  messages Array to select from
-             * @param  {String} parentId Parent messages should be in response to
-             * @return {Array}
-             */
-            responses(messages, parentId) {
-                var responses = [];
-                for (var i = 0; i < messages.length; i++) {
-                    if (messages[i].parent_id === parentId) {
-                        responses.push(messages[i]);
-                    }
-                }
-                return responses;
             }
 
         }
-
     }
 </script>

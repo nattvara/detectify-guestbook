@@ -11,14 +11,23 @@
 
 body, p, a, h1, h2, h3, h4, h5, textarea {
     font-family: $font, serif;
+    padding: 0;
 }
 
 body {
     background: $primary;
+    margin: 0;
 }
 
 .message.el-card > .el-card__body {
     padding-top: 0;
+
+    @media only screen and (max-width: $mobile-break) {
+        padding-left: 4px;
+        padding-right: 0;
+        padding-top: 0px;
+        padding-bottom: 10px;
+    }
 }
 
 .el-badge__content {
@@ -43,4 +52,17 @@ textarea {
 
 .el-dialog {
     max-width: 300px;
+
+    @media only screen and (max-width: $mobile-break) {
+        max-width: 100%;
+    }
+}
+
+input, label, button {
+    float: left;
+    margin: 5px;
+}
+
+.el-loading-mask {
+    background-color: rgba(#ffe9b3, .8) !important;
 }

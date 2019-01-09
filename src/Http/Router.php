@@ -20,6 +20,7 @@ use Guestbook\Http\Responses\RedirectResponse;
 use Guestbook\Http\Responses\Response;
 use Guestbook\Http\Routes\Route;
 use \Exception;
+use \Throwable;
 
 class Router {
 
@@ -88,7 +89,8 @@ class Router {
     public function route(Request $request): Response {
 
         $errorHandlers = [
-            '404' => function() use ($request) {
+            '404' => function(Throwable $t) use ($request) {
+                $request->wasThrownWith($t);
                 if ($request->isJson()) {
                     return (new JsonResponse([
                         'status_code'   => 404,
@@ -98,7 +100,8 @@ class Router {
                 }
                 return (new HtmlResponse('404.html'))->withStatusCode(404);
             },
-            'auth' => function() use ($request) {
+            'auth' => function(Throwable $t) use ($request) {
+                $request->wasThrownWith($t);
                 if ($request->isJson()) {
                     return (new JsonResponse([
                         'status_code'   => 403,
@@ -108,10 +111,12 @@ class Router {
                 }
                 return (new HtmlResponse('error.html', ['reason' => 'You need to login to view this resource']))->withStatusCode(403);
             },
-            'redirect' => function() use ($request) {
+            'redirect' => function(Throwable $t) use ($request) {
+                $request->wasThrownWith($t);
                 return new RedirectResponse('/');
             },
-            'csrf' => function() use ($request) {
+            'csrf' => function(Throwable $t) use ($request) {
+                $request->wasThrownWith($t);
                 if ($request->isJson()) {
                     return (new JsonResponse([
                         'status_code'   => 500,
@@ -121,7 +126,11 @@ class Router {
                 }
                 return (new HtmlResponse('error.html', ['reason' => 'Please reload the page and try again (CSRF Token)']))->withStatusCode(500);
             },
-            'general' => function() use ($request) {
+            'general' => function(Throwable $t) use ($request) {
+                if (getenv('env') === 'development') {
+                    throw $t;
+                }
+                $request->wasThrownWith($t);
                 if ($request->isJson()) {
                     return (new JsonResponse([
                         'status_code'   => 500,
@@ -140,15 +149,15 @@ class Router {
             }
             return $route->execute($request);
         } catch (RouteNotFoundException $e) {
-            return $errorHandlers['404']();
+            return $errorHandlers['404']($e);
         } catch (UnauthenticatedException $e) {
-            return $errorHandlers['auth']();
+            return $errorHandlers['auth']($e);
         } catch (GuestException $e) {
-            return $errorHandlers['redirect']();
+            return $errorHandlers['redirect']($e);
         } catch (InvalidCsrfException $e) {
-            return $errorHandlers['csrf']();
-        } catch (Exception $e) {
-            return $errorHandlers['general']();
+            return $errorHandlers['csrf']($e);
+        } catch (Throwable $t) {
+            return $errorHandlers['general']($t);
         }
     }
 

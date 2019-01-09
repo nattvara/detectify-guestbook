@@ -369,7 +369,7 @@ class Message {
      *
      * @return int
      */
-    protected function getParentMessageId(): int {
+    public function getParentMessageId(): int {
         return $this->parentMessageId;
     }
 
@@ -591,6 +591,7 @@ class Message {
             'parent_id'     => $this->hasParentMessage() ? $this->getParentMessage()->getPublicId() : null,
             'text'          => $this->getText(),
             'created_at'    => $this->getCreatedAt()->format(DateTime::ISO8601),
+            'children'      => [],
             'votes'         => [
                 'my_vote'   => $user ? $this->getVote($user) : null,
                 'up'        => $this->getUpvotes(),

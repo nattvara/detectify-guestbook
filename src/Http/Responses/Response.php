@@ -20,6 +20,13 @@ abstract class Response {
     private $responseBody = '';
 
     /**
+     * Http status code
+     *
+     * @var int
+     */
+    private $statusCode;
+
+    /**
      * Headers to include in response
      *
      * @var array
@@ -46,6 +53,15 @@ abstract class Response {
     }
 
     /**
+     * Get content type
+     *
+     * @return string
+     */
+    public function getContentType(): string {
+        return $this->contentType;
+    }
+
+    /**
      * Set status code of response
      *
      * @param  int    $code
@@ -53,7 +69,20 @@ abstract class Response {
      */
     public function withStatusCode(int $code): self {
         http_response_code($code);
+        $this->statusCode = $code;
         return $this;
+    }
+
+    /**
+     * Get status code
+     *
+     * @return int
+     */
+    public function getStatusCode(): int {
+        if (!$this->statusCode) {
+            return 200;
+        }
+        return $this->statusCode;
     }
 
     /**
