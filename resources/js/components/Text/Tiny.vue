@@ -9,21 +9,21 @@
         }
     }
 
-    h1 {
+    h3 {
         width: 100%;
         text-align: center;
-        font-size: 60px;
+        font-size: 20px;
         margin: 0;
 
         @media only screen and (max-width: $mobile-break) {
-            font-size: 40px;
+            font-size: 15px;
         }
     }
 
 </style>
 
 <template>
-    <h1 @click="routeIfHref();" :class="{clickable: href !== ''}">{{ text }}</h1>
+    <h3 @click="routeIfHref();" :class="{clickable: href !== ''}">{{ text }}</h3>
 </template>
 
 <script>

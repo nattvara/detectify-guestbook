@@ -10,9 +10,7 @@
 
 use Guestbook\Http\Log;
 use Guestbook\Http\Request;
-use Guestbook\Http\Responses\CssResponse;
 use Guestbook\Http\Responses\HtmlResponse;
-use Guestbook\Http\Responses\ImageResponse;
 use Guestbook\Http\Responses\JavascriptResponse;
 use Guestbook\Http\Router;
 use Guestbook\Http\Routes\GET;
@@ -22,14 +20,13 @@ require_once(__DIR__ . '/../vendor/autoload.php');
 require_once(__DIR__ . '/../.env.php');
 
 define('REQUEST_START', microtime(true));
+date_default_timezone_set(getenv('timezone'));
 
 $request = new Request;
 $request->readPhpGlobals();
 
 HtmlResponse::setResourceDirectory(__DIR__ . '/../resources/html');
 JavascriptResponse::setResourceDirectory(__DIR__ . '/../dist');
-CssResponse::setResourceDirectory(__DIR__ . '/../resources/css');
-ImageResponse::setResourceDirectory(__DIR__ . '/../resources/img');
 
 $router = new Router;
 $router->registerRoutes([
