@@ -237,4 +237,4 @@ Se the [package.json file](package.json)
 
 MIT © Ludwig Kristoffersson
 
-See LICENSE file for more information
+See [LICENSE file](LICENSE) for more information
