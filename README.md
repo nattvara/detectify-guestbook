@@ -15,7 +15,7 @@ This is a coding challenge for [Detectify](http://detectify.com/). The challenge
 
 ## Demo
 
-A live demo can be viewed at [https://detectify-guestbook.kristoffersson.org](https://detectify-guestbook.kristoffersson.org){:target="_blank"}
+A live demo can be viewed at [https://detectify-guestbook.kristoffersson.org](https://detectify-guestbook.kristoffersson.org)
 
 ## Features
 
@@ -28,7 +28,6 @@ A live demo can be viewed at [https://detectify-guestbook.kristoffersson.org](ht
 ## Overview
 
 ```
-
 src
 ├── Helpers/
 ├── Http                        # A lightweight http router framework
@@ -52,11 +51,9 @@ src
     ├── Message.php             # Message model, authored by, text, votes etc.
     ├── User.php
     └── ...
-
 ```
 
 ```
-
 resources
 ├── html/                       # Html templates
 ├── js
@@ -70,7 +67,6 @@ resources
     ├── app.scss                # Main Sass file
     ├── element-theme.scss      # ElementUI variables
     └── variables.scss          # Sass variables
-
 ```
 
 ## Build
@@ -107,7 +103,6 @@ cp .env.php.example .env.php
 ```
 
 ```php
-
 putenv('env=production');                                                // production|development
 putenv('host=127.0.0.1');                                                // database hostname
 putenv('username=root');                                                 // database username (should probably not be root)
@@ -139,6 +134,29 @@ php -S localhost:9000 ./public/router.php
 
 ```
 
+#### Run the testsuite
+
+```bash
+
+$ ./vendor/bin/phpunit
+
+```
+
+If database credentials in `phpunit.xml` are not valid and connection is refused, tests that rely on the database will be skipped
+
+```console
+$ ./vendor/bin/phpunit
+PHPUnit 7.5.1 by Sebastian Bergmann and contributors.
+
+....SSSSSSSSSS.........SSSSSSSSSSSSS                              36 / 36 (100%)
+
+Time: 147 ms, Memory: 4.00MB
+
+OK, but incomplete, skipped, or risky tests!
+Tests: 36, Assertions: 15, Skipped: 23.
+
+```
+
 ### Remote Server
 
 > The repo includes an example file for [Deployer](https://github.com/deployphp/deployer). This is configured for an ubuntu server (connecting over SSH using a `.pem` file) with Apache and MySQL installed and a user account `ubuntu` that has write permissions to `/var/www/[YOUR HOST NAME]`
@@ -150,7 +168,6 @@ Copy `deploy.php.example` to `deploy.php`
 Replace host name with your host
 
 ```php
-
 host('[YOUR HOST NAME]')
     ->stage('production')
     ->user('ubuntu')
