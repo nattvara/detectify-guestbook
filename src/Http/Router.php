@@ -69,7 +69,7 @@ class Router {
                 continue;
             }
 
-            if ($route->getPath() === $path && !$route->hasVariables()) {
+            if ($route->getPath() === parse_url($path)['path'] && !$route->hasVariables()) {
                 return $route;
             }
 

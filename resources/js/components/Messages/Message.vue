@@ -55,6 +55,14 @@
         }
     }
 
+    .date {
+        float: right;
+
+        *.el-tag {
+            cursor: default;
+        }
+    }
+
 </style>
 
 <template>
@@ -65,6 +73,11 @@
                     <em>{{ author }}</em>
                     <span v-if="isRoot">writes,</span>
                     <span v-if="!isRoot">responds,</span>
+                    <p class="date">
+                        <el-tooltip class="item" effect="dark" :content="getPrettyCreatedAt()" placement="left">
+                            <el-tag type="info" size="mini">{{ durationSinceCreated }}</el-tag>
+                        </el-tooltip>
+                    </p>
                 </h4>
             </el-row>
             <el-row>
@@ -119,6 +132,7 @@
 </template>
 
 <script>
+    import moment from 'moment'
     import NewMessage from './../Forms/NewMessage'
     export default {
 
@@ -165,8 +179,21 @@
             return {
                 replyForm: {
                     show: false,
-                }
+                },
+                durationSinceCreated: ''
             };
+        },
+
+        /**
+         * Component was mounted
+         *
+         * @return {void}
+         */
+        async mounted() {
+            while (true) {
+                this.durationSinceCreated = this.getPrettyDurationSinceCreated();
+                await this.sleep(1000);
+            }
         },
 
         /**
@@ -175,6 +202,47 @@
          * @type {Object}
          */
         methods: {
+
+            /**
+             * Get pretty created at
+             *
+             * @return {String}
+             */
+            getPrettyCreatedAt() {
+                return moment(this.createdAt).format('dddd, MMMM Do YYYY, HH:MM:ss');
+            },
+
+            /**
+             * Get pretty duration since message was created
+             *
+             * @return {String}
+             */
+            getPrettyDurationSinceCreated() {
+                let now         = moment();
+                let diff        = now.diff(moment(this.createdAt));
+                let duration    = moment.duration(diff);
+                if (duration.years()) {
+                    return `${duration.years()} Years ago`;
+                }
+                if (duration.months()) {
+                    return `${duration.months()} Months ago`;
+                }
+                if (duration.weeks()) {
+                    return `${duration.weeks()} Weeks ago`;
+                }
+                if (duration.days()) {
+                    return `${duration.days()} Days ago`;
+                }
+                if (duration.hours()) {
+                    return `${duration.hours()} Hours ago`;
+                }
+                if (duration.minutes()) {
+                    return `${duration.minutes()} Miuntes ago`;
+                }
+                if (duration.seconds()) {
+                    return `${duration.seconds()} Seconds ago`;
+                }
+            },
 
             /**
              * Show reply form

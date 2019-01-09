@@ -45,6 +45,7 @@ Vue.component('register-form', require('./components/Forms/Register.vue').defaul
 Vue.component('messages', require('./components/Messages/Main.vue').default);
 Vue.component('huge', require('./components/Text/Huge.vue').default);
 Vue.component('medium', require('./components/Text/Medium.vue').default);
+Vue.component('tiny', require('./components/Text/Tiny.vue').default);
 
 Vue.mixin({
     data() {

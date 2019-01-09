@@ -108,7 +108,10 @@
 
                     <el-form-item>
                         <el-row class="btn-row">
-                            <el-button class="submit" type="primary" plain @click="register();">Register</el-button>
+                            <el-button class="submit" type="primary" plain @click="register();">
+                                <span v-if="!registerForm.loading">Register</span>
+                                <span v-if="registerForm.loading">Submitting...</span>
+                            </el-button>
                         </el-row>
                     </el-form-item>
                 </el-form>
@@ -128,6 +131,7 @@
         data() {
             return {
                 registerForm: {
+                    loading: false,
                     show: false,
                     form: {
                         email: '',
@@ -220,6 +224,7 @@
              * @return {void}
              */
             async register() {
+                this.registerForm.loading = true;
                 try {
                     var response = await axios.post('/register', this.registerForm.form);
                     window.location.reload();
@@ -236,6 +241,8 @@
                         }
                         this.registerForm.errors[error.field] += error.human_friendly;
                     }
+                } finally {
+                    this.registerForm.loading = false;
                 }
             }
 
