@@ -28,7 +28,6 @@ A live demo can be viewed at [https://detectify-guestbook.kristoffersson.org](ht
 ## Overview
 
 ```
-
 src
 ├── Helpers/
 ├── Http                        # A lightweight http router framework
@@ -52,11 +51,9 @@ src
     ├── Message.php             # Message model, authored by, text, votes etc.
     ├── User.php
     └── ...
-
 ```
 
 ```
-
 resources
 ├── html/                       # Html templates
 ├── js
@@ -70,7 +67,6 @@ resources
     ├── app.scss                # Main Sass file
     ├── element-theme.scss      # ElementUI variables
     └── variables.scss          # Sass variables
-
 ```
 
 ## Build
@@ -107,7 +103,6 @@ cp .env.php.example .env.php
 ```
 
 ```php
-
 putenv('env=production');                                                // production|development
 putenv('host=127.0.0.1');                                                // database hostname
 putenv('username=root');                                                 // database username (should probably not be root)
@@ -150,7 +145,6 @@ Copy `deploy.php.example` to `deploy.php`
 Replace host name with your host
 
 ```php
-
 host('[YOUR HOST NAME]')
     ->stage('production')
     ->user('ubuntu')
